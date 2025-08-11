@@ -147,7 +147,7 @@ a {
                     </h2>
                 </div>
             <div class="form">
-                <form class="login mt-3" action="{{ route('loginSuper') }}" method="POST">
+                <form class="login mt-3" action="{{ route('loginUser') }}" method="POST">
                     @csrf
                     
                     @if (Session::has('success'))

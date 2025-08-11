@@ -18,9 +18,16 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'first_name',
+        'last_name',
+        'phone',
+        'code',
+        'is_verified',
+        'gender',
+        'academic_level',
+        'image',
+        'is_active',
+        'fcm_token',
     ];
 
     /**
@@ -41,4 +48,30 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function login()
+    {
+        return $this->createToken('user-token')->plainTextToken;
+    }
+
+    public function sendVerificationCode()
+    {
+        $this->update([
+            'code' => random_int(100000, 999999),
+            'is_verified' => false,
+        ]);
+    }
+
+    public function markAsVerified()
+    {
+        $this->update([
+            'is_verified' => true,
+            'code' => null,
+        ]);
+    }
+
+    public function profile_completed()
+    {
+        return !is_null($this->academic_level);
+    }
 }

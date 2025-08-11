@@ -1,4 +1,4 @@
-@extends('Super.layout')
+@extends('Admin.layout')
 
 @section('styles')
 <style>
@@ -113,7 +113,7 @@
 <div class="dashboard-container" dir="rtl">
     <div class="row g-4">
         <!-- Users Stats Card -->
-        <div class="col-sm-4">
+        {{-- <div class="col-sm-4">
             <div class="stats-card">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
@@ -303,7 +303,7 @@
                     });
                 </script>
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>
 @endsection

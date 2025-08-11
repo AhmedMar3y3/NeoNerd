@@ -34,4 +34,9 @@ return
         'booking_time_left_minutes' => 'باقي :count دقيقة|باقي :count دقائق',
         'no_ongoing_booking' => 'لا يوجد حجز جاري في الوقت الحالي',
         'minutes' => 'دقائق',
+        'failed_to_send_code' => 'فشل في إرسال الكود',
+        'code_sent_successfully' => 'تم إرسال الكود بنجاح',
+        'logged_out' => 'تم تسجيل الخروج بنجاح',
+        'profile_updated_successfully' => 'تم تحديث الملف الشخصي بنجاح',
+        'profile_completion_needed' => 'يرجى إكمال بيانات الملف الشخصي',
     ];

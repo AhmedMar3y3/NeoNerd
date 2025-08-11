@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="ar">
-    @include('Super.partials.head')
+    @include('Admin.partials.head')
     <body>
         <div class="container-scroller">
            
             <div class="container-fluid page-body-wrapper">
-                @include('Super.partials.navbar')
+                @include('Admin.partials.navbar')
                 <div class="main-panel" >
                     <div class="content-wrapper" style="background-color: #0F172A">
                         <main id="main" class="main" >
                             @yield('main')
                         </main>
                     </div>
-                    @include('Super.partials.footer')
+                    @include('Admin.partials.footer')
                 </div>
             </div>
-            @include('Super.partials.sidebar')
+            @include('Admin.partials.sidebar')
         </div>
-        @include('Super.partials.scripts')
+        @include('Admin.partials.scripts')
         @yield('scripts')
     </body>
 </html>

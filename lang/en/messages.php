@@ -34,4 +34,9 @@ return
         'booking_time_left_minutes' => ':count minute left|:count minutes left',
         'no_ongoing_booking' => 'No ongoing booking at the moment',
         'minutes' => 'minutes',
+        'failed_to_send_code' => 'Failed to send the code',
+        'code_sent_successfully' => 'Code sent successfully',
+        'logged_out' => 'Successfully logged out',
+        'profile_updated_successfully' => 'Profile updated successfully',
+        'profile_completion_needed' => 'Please complete your profile information',
     ];

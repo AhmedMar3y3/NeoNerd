@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\Gender;
 
 return new class extends Migration
 {
@@ -13,10 +14,17 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('phone')->unique();
+            $table->string('code')->nullable();
+            $table->boolean('is_verified')->default(false);
+            $table->string('gender')->default(Gender::MALE->value);
+            $table->string('academic_level')->nullable();
+            $table->string('image')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->string('fcm_token')->nullable();
+            $table->boolean('is_academic_details_set')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });
