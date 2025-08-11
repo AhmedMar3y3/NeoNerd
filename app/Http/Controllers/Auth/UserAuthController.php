@@ -2,83 +2,138 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
-use Illuminate\Http\Request;
-use App\Traits\HttpResponses;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\User\CompleteProfileRequest;
-use App\Services\HypersenderService;
-use App\Http\Resources\Auth\UserAuthResource;
-use App\Http\Requests\Auth\User\VerifyPhoneRequest;
 use App\Http\Requests\Auth\User\RegisterOrLoginRequest;
+use App\Http\Requests\Auth\User\VerifyPhoneRequest;
+use App\Http\Resources\Auth\UserAuthResource;
+use App\Models\User;
+use App\Services\AcademicProfileService;
+use App\Services\HypersenderService;
+use App\Traits\HttpResponses;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class UserAuthController extends Controller
 {
     use HttpResponses;
 
+    public function __construct(
+        private AcademicProfileService $academicProfileService,
+        private HypersenderService $hypersenderService
+    ) {}
+
     public function registerOrLogin(RegisterOrLoginRequest $request)
     {
-        DB::beginTransaction();
-        try {
-            $user = User::create($request->validated());
-            $user->sendVerificationCode();
-            $sent = HypersenderService::sendMessage($user->phone, 'كود التفعيل الخاص بك هو: ' . $user->code);
+        $user = User::where('phone', $request->phone)->first();
 
-            if (!$sent) {
-                DB::rollBack();
-                return $this->failureResponse(__('messages.failed_to_send_code'));
-            }
-
-            DB::commit();
-            return $this->successResponse(__('messages.code_sent_successfully'));
-        } catch (\Exception) {
-            DB::rollBack();
-            return $this->failureResponse(__('messages.failed_to_send_code'));
+        if (!$user) {
+            $user = User::create([
+                'phone' => $request->phone,
+                'code' => random_int(100000, 999999),
+                'is_verified' => false,
+            ]);
+        } else {
+            $user->update([
+                'code' => random_int(100000, 999999),
+                'is_verified' => false,
+            ]);
         }
+
+        // Send verification code via WhatsApp
+        $this->hypersenderService->sendMessage(
+            $user->phone,
+            "Your verification code is: {$user->code}"
+        );
+
+        return $this->successWithDataResponse([
+            'user' => new UserAuthResource($user),
+            'message' => 'Verification code sent successfully'
+        ]);
     }
 
     public function verifyCode(VerifyPhoneRequest $request)
     {
         $user = User::where('phone', $request->phone)->first();
 
-        if (!$user || $user->code !== $request->code) {
-            return $this->failureResponse(__('messages.invalid_data'));
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'phone' => 'User not found.'
+            ]);
+        }
+
+        if ($user->code !== $request->code) {
+            throw ValidationException::withMessages([
+                'code' => 'Invalid verification code.'
+            ]);
         }
 
         $user->markAsVerified();
-        return $this->successWithDataResponse(UserAuthResource::make($user)->setToken($user->login()));
+
+        return $this->successWithDataResponse([
+            'user' => new UserAuthResource($user),
+            'token' => $user->login(),
+            'message' => 'Phone verified successfully'
+        ]);
     }
 
-    public function resendCode(RegisterOrLoginRequest $request)
+    public function resendCode(Request $request)
     {
+        $request->validate([
+            'phone' => 'required|string|exists:users,phone'
+        ]);
+
         $user = User::where('phone', $request->phone)->first();
-
-        if (!$user) {
-            return $this->failureResponse(__('messages.invalid_data'));
-        }
-
         $user->sendVerificationCode();
-        $sent = HypersenderService::sendMessage($user->phone, 'كود التفعيل الخاص بك هو: ' . $user->code);
 
-        if (!$sent) {
-            return $this->failureResponse(__('messages.failed_to_send_code'));
-        }
+        // Send verification code via WhatsApp
+        $this->hypersenderService->sendMessage(
+            $user->phone,
+            "Your verification code is: {$user->code}"
+        );
 
-        return $this->successResponse(__('messages.code_sent_successfully'));
+        return $this->successResponse('Verification code resent successfully');
     }
 
     public function completeProfile(CompleteProfileRequest $request)
     {
-        $user = auth()->user();
-        $user->update($request->validated());
-        return $this->successResponse(__('messages.profile_updated_successfully'));
+        $user = $request->user();
+
+        if ($user->profile_completed()) {
+            return $this->failureResponse('Profile already completed');
+        }
+
+        try {
+            $this->academicProfileService->completeAcademicProfile($user, $request->validated());
+
+            return $this->successWithDataResponse([
+                'user' => new UserAuthResource($user),
+                'message' => 'Profile completed successfully'
+            ]);
+        } catch (\Exception $e) {
+            return $this->failureResponse($e->getMessage());
+        }
     }
 
-    //Logout User
+    public function getProfile(Request $request)
+    {
+        $user = $request->user()->load([
+            'university',
+            'college',
+            'grade',
+            'secondaryType'
+        ]);
+
+        return $this->successWithDataResponse([
+            'user' => new UserAuthResource($user)
+        ]);
+    }
+
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-        return $this->successResponse(__('auth.logged_out'));
+
+        return $this->successResponse('Logged out successfully');
     }
 }

@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Enums\Gender;
+use App\Enums\AcademicLevel;
+use App\Enums\SecondaryGrade;
+use App\Enums\SecondarySection;
+use App\Enums\ScientificBranch;
 
 class User extends Authenticatable
 {
@@ -28,6 +33,16 @@ class User extends Authenticatable
         'image',
         'is_active',
         'fcm_token',
+        // University flow fields
+        'university_id',
+        'college_id',
+        'grade_id',
+        // Secondary flow fields
+        'secondary_type_id',
+        'secondary_grade',
+        'secondary_section',
+        'scientific_branch',
+        'is_academic_details_set',
     ];
 
     /**
@@ -47,7 +62,34 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'gender' => Gender::class,
+        'academic_level' => AcademicLevel::class,
+        'secondary_grade' => SecondaryGrade::class,
+        'secondary_section' => SecondarySection::class,
+        'scientific_branch' => ScientificBranch::class,
+        'is_academic_details_set' => 'boolean',
     ];
+
+    // Relationships
+    public function university()
+    {
+        return $this->belongsTo(University::class);
+    }
+
+    public function college()
+    {
+        return $this->belongsTo(College::class);
+    }
+
+    public function grade()
+    {
+        return $this->belongsTo(Grade::class);
+    }
+
+    public function secondaryType()
+    {
+        return $this->belongsTo(SecondaryType::class);
+    }
 
     public function login()
     {
@@ -72,6 +114,16 @@ class User extends Authenticatable
 
     public function profile_completed()
     {
-        return !is_null($this->academic_level);
+        return $this->is_academic_details_set;
+    }
+
+    public function isUniversityStudent()
+    {
+        return $this->academic_level === AcademicLevel::UNIVERSITY;
+    }
+
+    public function isSecondaryStudent()
+    {
+        return $this->academic_level === AcademicLevel::SECONDARY;
     }
 }

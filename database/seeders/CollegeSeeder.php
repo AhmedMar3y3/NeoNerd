@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\University;
 use App\Models\College;
+use App\Models\CollegeType;
 
 class CollegeSeeder extends Seeder
 {
@@ -13,104 +13,100 @@ class CollegeSeeder extends Seeder
      */
     public function run(): void
     {
-        $collegesByUniversity = [
-            'جامعة القاهرة' => [
-                'كلية الطب',
-                'كلية الهندسة',
-                'كلية العلوم',
-                'كلية الحقوق',
-                'كلية التجارة',
-                'كلية الآداب',
-                'كلية طب الأسنان',
-                'كلية الصيدلة',
-                'كلية الطب البيطري',
-                'كلية الزراعة',
-                'كلية دار العلوم',
-                'كلية التربية',
-                'كلية الحاسبات والمعلومات',
-                'كلية التمريض',
-                'كلية العلاج الطبيعي',
+        $collegeTypes = CollegeType::all()->keyBy('name');
+
+        $colleges = [
+            [
+                'name' => 'كلية الطب',
+                'university_id' => 1, // Cairo University
+                'college_type_id' => $collegeTypes['كلية الطب']->id,
             ],
-            'جامعة الأزهر' => [
-                'كلية الشريعة والقانون',
-                'كلية أصول الدين',
-                'كلية اللغة العربية',
-                'كلية الدراسات الإسلامية والعربية',
-                'كلية الطب',
-                'كلية الهندسة',
-                'كلية العلوم',
-                'كلية التجارة',
-                'كلية التربية',
-                'كلية طب الأسنان',
-                'كلية الصيدلة',
+            [
+                'name' => 'كلية طب الأسنان',
+                'university_id' => 1,
+                'college_type_id' => $collegeTypes['كلية طب الأسنان']->id,
             ],
-            'جامعة عين شمس' => [
-                'كلية الطب',
-                'كلية الهندسة',
-                'كلية العلوم',
-                'كلية التجارة',
-                'كلية الحقوق',
-                'كلية الآداب',
-                'كلية التربية',
-                'كلية طب الأسنان',
-                'كلية الصيدلة',
-                'كلية الزراعة',
-                'كلية الألسن',
-                'كلية الحاسبات والمعلومات',
-                'كلية التمريض',
-                'كلية البنات للآداب والعلوم والتربية',
+            [
+                'name' => 'كلية الصيدلة',
+                'university_id' => 1,
+                'college_type_id' => $collegeTypes['كلية الصيدلة']->id,
             ],
-            'جامعة الإسكندرية' => [
-                'كلية الطب',
-                'كلية الهندسة',
-                'كلية العلوم',
-                'كلية الحقوق',
-                'كلية التجارة',
-                'كلية الآداب',
-                'كلية طب الأسنان',
-                'كلية الصيدلة',
-                'كلية الطب البيطري',
-                'كلية الزراعة',
-                'كلية التربية',
-                'كلية التمريض',
-                'كلية الفنون الجميلة',
-                'كلية التربية الرياضية',
+            [
+                'name' => 'كلية الهندسة',
+                'university_id' => 1,
+                'college_type_id' => $collegeTypes['كلية الهندسة']->id,
+            ],
+            [
+                'name' => 'كلية الحاسبات والمعلومات',
+                'university_id' => 1,
+                'college_type_id' => $collegeTypes['كلية الحاسبات والمعلومات']->id,
+            ],
+            [
+                'name' => 'كلية التجارة',
+                'university_id' => 1,
+                'college_type_id' => $collegeTypes['كلية التجارة']->id,
+            ],
+            [
+                'name' => 'كلية الآداب',
+                'university_id' => 1,
+                'college_type_id' => $collegeTypes['كلية الآداب']->id,
+            ],
+            [
+                'name' => 'كلية العلوم',
+                'university_id' => 1,
+                'college_type_id' => $collegeTypes['كلية العلوم']->id,
+            ],
+            [
+                'name' => 'كلية التربية',
+                'university_id' => 1,
+                'college_type_id' => $collegeTypes['كلية التربية']->id,
+            ],
+            [
+                'name' => 'كلية الحقوق',
+                'university_id' => 1,
+                'college_type_id' => $collegeTypes['كلية الحقوق']->id,
+            ],
+            // Alexandria University
+            [
+                'name' => 'كلية الطب',
+                'university_id' => 2,
+                'college_type_id' => $collegeTypes['كلية الطب']->id,
+            ],
+            [
+                'name' => 'كلية الهندسة',
+                'university_id' => 2,
+                'college_type_id' => $collegeTypes['كلية الهندسة']->id,
+            ],
+            [
+                'name' => 'كلية الحاسبات والمعلومات',
+                'university_id' => 2,
+                'college_type_id' => $collegeTypes['كلية الحاسبات والمعلومات']->id,
+            ],
+            [
+                'name' => 'كلية التجارة',
+                'university_id' => 2,
+                'college_type_id' => $collegeTypes['كلية التجارة']->id,
+            ],
+            // Mansoura University
+            [
+                'name' => 'كلية الطب',
+                'university_id' => 3,
+                'college_type_id' => $collegeTypes['كلية الطب']->id,
+            ],
+            [
+                'name' => 'كلية الهندسة',
+                'university_id' => 3,
+                'college_type_id' => $collegeTypes['كلية الهندسة']->id,
+            ],
+            [
+                'name' => 'كلية الحاسبات والمعلومات',
+                'university_id' => 3,
+                'college_type_id' => $collegeTypes['كلية الحاسبات والمعلومات']->id,
             ],
         ];
 
-        foreach ($collegesByUniversity as $universityName => $colleges) {
-            $university = University::where('name', $universityName)->first();
-            
-            if ($university) {
-                foreach ($colleges as $collegeName) {
-                    College::create([
-                        'name' => $collegeName,
-                        'university_id' => $university->id,
-                    ]);
-                }
-            }
-        }
-
-        // Add more colleges for other universities with common faculties
-        $otherUniversities = University::whereNotIn('name', array_keys($collegesByUniversity))->get();
-        $commonColleges = [
-            'كلية الطب',
-            'كلية الهندسة',
-            'كلية العلوم',
-            'كلية التجارة',
-            'كلية الحقوق',
-            'كلية الآداب',
-            'كلية التربية',
-            'كلية الزراعة',
-        ];
-
-        foreach ($otherUniversities as $university) {
-            foreach ($commonColleges as $collegeName) {
-                College::create([
-                    'name' => $collegeName,
-                    'university_id' => $university->id,
-                ]);
-            }
+        foreach ($colleges as $college) {
+            College::create($college);
         }
     }
 }

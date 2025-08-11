@@ -4,6 +4,6 @@ namespace App\Enums;
 
 enum AcademicLevel: string
 {
-    case UNIVERSITY = 'University';
-    case SECONDARY = 'Secondary';
+    case UNIVERSITY = 'university';
+    case SECONDARY = 'secondary';
 }
