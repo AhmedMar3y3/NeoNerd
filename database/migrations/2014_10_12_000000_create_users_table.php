@@ -25,6 +25,17 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->string('fcm_token')->nullable();
             $table->boolean('is_academic_details_set')->default(false);
+
+            // University flow fields
+            $table->foreignId('university_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('college_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('grade_id')->nullable()->constrained()->onDelete('cascade');
+
+            // Secondary flow fields
+            $table->string('secondary_type')->nullable(); // arabic, language
+            $table->string('secondary_grade')->nullable(); // first, second, third
+            $table->string('secondary_section')->nullable(); // literal, scientific
+            $table->string('scientific_branch')->nullable(); // science, math
             $table->rememberToken();
             $table->timestamps();
         });

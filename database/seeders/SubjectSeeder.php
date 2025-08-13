@@ -2,14 +2,15 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Enums\Term;
 use App\Models\Subject;
 use App\Models\CollegeType;
-use App\Models\SecondaryType;
 use App\Enums\AcademicLevel;
 use App\Enums\SubjectType;
+use App\Enums\SecondaryType;
 use App\Enums\SecondaryGrade;
 use App\Enums\SecondarySection;
+use Illuminate\Database\Seeder;
 
 class SubjectSeeder extends Seeder
 {
@@ -28,6 +29,7 @@ class SubjectSeeder extends Seeder
     private function createUniversitySubjects()
     {
         $collegeTypes = CollegeType::all();
+        $terms = [Term::FIRST, Term::SECOND];
 
         foreach ($collegeTypes as $collegeType) {
             // Common subjects for all college types
@@ -38,31 +40,35 @@ class SubjectSeeder extends Seeder
                 'الكمبيوتر',
             ];
 
-            // Create subjects for each grade level (1-6)
+            // Create subjects for each grade level (1-6) and term
             for ($gradeLevel = 1; $gradeLevel <= 6; $gradeLevel++) {
-                foreach ($commonSubjects as $subjectName) {
-                    Subject::create([
-                        'name' => $subjectName,
-                        'description' => "مادة {$subjectName} للسنة {$gradeLevel}",
-                        'academic_level' => AcademicLevel::UNIVERSITY,
-                        'college_type_id' => $collegeType->id,
-                        'grade_level' => $gradeLevel,
-                        'is_active' => true,
-                    ]);
-                }
+                foreach ($terms as $term) {
+                    foreach ($commonSubjects as $subjectName) {
+                        Subject::create([
+                            'name' => $subjectName,
+                            'academic_level' => AcademicLevel::UNIVERSITY,
+                            'type' => SubjectType::BOTH,
+                            'college_type_id' => $collegeType->id,
+                            'grade_level' => $gradeLevel,
+                            'term' => $term,
+                            'is_active' => true,
+                        ]);
+                    }
 
-                // College-specific subjects
-                $collegeSpecificSubjects = $this->getCollegeSpecificSubjects($collegeType->name, $gradeLevel);
-                
-                foreach ($collegeSpecificSubjects as $subjectName) {
-                    Subject::create([
-                        'name' => $subjectName,
-                        'description' => "مادة {$subjectName} للسنة {$gradeLevel} في {$collegeType->name}",
-                        'academic_level' => AcademicLevel::UNIVERSITY,
-                        'college_type_id' => $collegeType->id,
-                        'grade_level' => $gradeLevel,
-                        'is_active' => true,
-                    ]);
+                    // College-specific subjects
+                    $collegeSpecificSubjects = $this->getCollegeSpecificSubjects($collegeType->name, $gradeLevel);
+                    
+                    foreach ($collegeSpecificSubjects as $subjectName) {
+                        Subject::create([
+                            'name' => $subjectName,
+                            'academic_level' => AcademicLevel::UNIVERSITY,
+                            'type' => SubjectType::SCIENTIFIC,
+                            'college_type_id' => $collegeType->id,
+                            'grade_level' => $gradeLevel,
+                            'term' => $term,
+                            'is_active' => true,
+                        ]);
+                    }
                 }
             }
         }
@@ -70,51 +76,54 @@ class SubjectSeeder extends Seeder
 
     private function createSecondarySubjects()
     {
-        $secondaryTypes = SecondaryType::all();
+        $secondaryTypes = [SecondaryType::ARABIC, SecondaryType::LANGUAGE];
         $grades = [SecondaryGrade::FIRST, SecondaryGrade::SECOND, SecondaryGrade::THIRD];
         $sections = [SecondarySection::LITERAL, SecondarySection::SCIENTIFIC];
+        $terms = [Term::FIRST, Term::SECOND];
 
         foreach ($secondaryTypes as $secondaryType) {
             foreach ($grades as $grade) {
-                // Common subjects for all grades
-                $commonSubjects = [
-                    'اللغة العربية' => SubjectType::BOTH,
-                    'اللغة الإنجليزية' => SubjectType::BOTH,
-                    'الرياضيات' => SubjectType::SCIENTIFIC,
-                    'العلوم' => SubjectType::SCIENTIFIC,
-                    'الدراسات الاجتماعية' => SubjectType::LITERAL,
-                    'التربية الدينية' => SubjectType::BOTH,
-                    'الكمبيوتر' => SubjectType::BOTH,
-                ];
+                foreach ($terms as $term) {
+                    // Common subjects for all grades (no section required for first grade)
+                    $commonSubjects = [
+                        'اللغة العربية' => SubjectType::BOTH,
+                        'اللغة الإنجليزية' => SubjectType::BOTH,
+                        'الرياضيات' => SubjectType::SCIENTIFIC,
+                        'العلوم' => SubjectType::SCIENTIFIC,
+                        'الدراسات الاجتماعية' => SubjectType::LITERAL,
+                        'التربية الدينية' => SubjectType::BOTH,
+                        'الكمبيوتر' => SubjectType::BOTH,
+                    ];
 
-                foreach ($commonSubjects as $subjectName => $type) {
-                    Subject::create([
-                        'name' => $subjectName,
-                        'description' => "مادة {$subjectName} للصف {$this->getGradeLabel($grade)} - {$secondaryType->name}",
-                        'academic_level' => AcademicLevel::SECONDARY,
-                        'type' => $type,
-                        'secondary_type_id' => $secondaryType->id,
-                        'secondary_grade' => $grade,
-                        'is_active' => true,
-                    ]);
-                }
+                    foreach ($commonSubjects as $subjectName => $type) {
+                        Subject::create([
+                            'name' => $subjectName,
+                            'academic_level' => AcademicLevel::SECONDARY,
+                            'type' => $type,
+                            'secondary_type' => $secondaryType,
+                            'secondary_grade' => $grade,
+                            'term' => $term,
+                            'is_active' => true,
+                        ]);
+                    }
 
-                // Grade-specific subjects
-                if ($grade === SecondaryGrade::SECOND || $grade === SecondaryGrade::THIRD) {
-                    foreach ($sections as $section) {
-                        $sectionSubjects = $this->getSectionSpecificSubjects($section);
-                        
-                        foreach ($sectionSubjects as $subjectName => $type) {
-                            Subject::create([
-                                'name' => $subjectName,
-                                'description' => "مادة {$subjectName} للصف {$this->getGradeLabel($grade)} - {$this->getSectionLabel($section)} - {$secondaryType->name}",
-                                'academic_level' => AcademicLevel::SECONDARY,
-                                'type' => $type,
-                                'secondary_type_id' => $secondaryType->id,
-                                'secondary_grade' => $grade,
-                                'secondary_section' => $section,
-                                'is_active' => true,
-                            ]);
+                    // Grade-specific subjects (only for 2nd and 3rd grades)
+                    if ($grade === SecondaryGrade::SECOND || $grade === SecondaryGrade::THIRD) {
+                        foreach ($sections as $section) {
+                            $sectionSubjects = $this->getSectionSpecificSubjects($section);
+                            
+                            foreach ($sectionSubjects as $subjectName => $type) {
+                                Subject::create([
+                                    'name' => $subjectName,
+                                    'academic_level' => AcademicLevel::SECONDARY,
+                                    'type' => $type,
+                                    'secondary_type' => $secondaryType,
+                                    'secondary_grade' => $grade,
+                                    'secondary_section' => $section,
+                                    'term' => $term,
+                                    'is_active' => true,
+                                ]);
+                            }
                         }
                     }
                 }
@@ -222,6 +231,14 @@ class SubjectSeeder extends Seeder
         return match ($section) {
             SecondarySection::LITERAL => 'أدبي',
             SecondarySection::SCIENTIFIC => 'علمي',
+        };
+    }
+
+    private function getTypeLabel($type)
+    {
+        return match ($type) {
+            SecondaryType::ARABIC => 'عربي',
+            SecondaryType::LANGUAGE => 'لغات',
         };
     }
 }

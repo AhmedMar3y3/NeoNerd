@@ -39,4 +39,8 @@ return
         'logged_out' => 'تم تسجيل الخروج بنجاح',
         'profile_updated_successfully' => 'تم تحديث الملف الشخصي بنجاح',
         'profile_completion_needed' => 'يرجى إكمال بيانات الملف الشخصي',
+        'failed_to_complete_profile' => 'فشل في إكمال الملف الشخصي',
+        'profile_completed_successfully' => 'تم إكمال الملف الشخصي بنجاح',
+        'profile_already_completed' => 'تم إكمال الملف الشخصي بالفعل',
+        'invalid_term' => 'الفصل الدراسي غير صالح. يجب أن يكون "الأول" أو "الثاني".'
     ];

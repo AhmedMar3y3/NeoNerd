@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\User;
+use Illuminate\Http\Request;
+use App\Traits\HttpResponses;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Services\HypersenderService;
+use App\Services\AcademicProfileService;
+use App\Http\Resources\Auth\UserAuthResource;
+use App\Http\Requests\Auth\User\VerifyPhoneRequest;
 use App\Http\Requests\Auth\User\CompleteProfileRequest;
 use App\Http\Requests\Auth\User\RegisterOrLoginRequest;
-use App\Http\Requests\Auth\User\VerifyPhoneRequest;
-use App\Http\Resources\Auth\UserAuthResource;
-use App\Models\User;
-use App\Services\AcademicProfileService;
-use App\Services\HypersenderService;
-use App\Traits\HttpResponses;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+
+
 
 class UserAuthController extends Controller
 {
@@ -26,74 +27,58 @@ class UserAuthController extends Controller
 
     public function registerOrLogin(RegisterOrLoginRequest $request)
     {
-        $user = User::where('phone', $request->phone)->first();
+        DB::beginTransaction();
+        try {
+            $user = User::where('phone', $request->phone)->first();
 
-        if (!$user) {
-            $user = User::create([
-                'phone' => $request->phone,
-                'code' => random_int(100000, 999999),
-                'is_verified' => false,
-            ]);
-        } else {
-            $user->update([
-                'code' => random_int(100000, 999999),
-                'is_verified' => false,
-            ]);
+            if (!$user) {
+                $user = User::create($request->validated());
+                $user->sendVerificationCode();
+            }
+            $user->sendVerificationCode();
+            $sent = HypersenderService::sendMessage($user->phone, 'كود التفعيل الخاص بك هو: ' . $user->code);
+
+            if (!$sent) {
+                DB::rollBack();
+                return $this->failureResponse(__('messages.failed_to_send_code'));
+            }
+
+            DB::commit();
+            return $this->successResponse(__('messages.code_sent_successfully'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->failureResponse(__('messages.failed_to_send_code'));
         }
-
-        // Send verification code via WhatsApp
-        $this->hypersenderService->sendMessage(
-            $user->phone,
-            "Your verification code is: {$user->code}"
-        );
-
-        return $this->successWithDataResponse([
-            'user' => new UserAuthResource($user),
-            'message' => 'Verification code sent successfully'
-        ]);
     }
 
     public function verifyCode(VerifyPhoneRequest $request)
     {
         $user = User::where('phone', $request->phone)->first();
 
-        if (!$user) {
-            throw ValidationException::withMessages([
-                'phone' => 'User not found.'
-            ]);
-        }
-
-        if ($user->code !== $request->code) {
-            throw ValidationException::withMessages([
-                'code' => 'Invalid verification code.'
-            ]);
+        if (!$user || $user->code !== $request->code) {
+            return $this->failureResponse(__('messages.invalid_data'));
         }
 
         $user->markAsVerified();
-
-        return $this->successWithDataResponse([
-            'user' => new UserAuthResource($user),
-            'token' => $user->login(),
-            'message' => 'Phone verified successfully'
-        ]);
+        return $this->successWithDataResponse(UserAuthResource::make($user)->setToken($user->login()));
     }
 
-    public function resendCode(Request $request)
+    public function resendCode(RegisterOrLoginRequest $request)
     {
-        $request->validate([
-            'phone' => 'required|string|exists:users,phone'
-        ]);
-
         $user = User::where('phone', $request->phone)->first();
+
+        if (!$user) {
+            return $this->failureResponse(__('messages.invalid_data'));
+        }
+
         $user->sendVerificationCode();
+        $sent = HypersenderService::sendMessage($user->phone, 'كود التفعيل الخاص بك هو: ' . $user->code);
 
-        // Send verification code via WhatsApp
-        $this->hypersenderService->sendMessage(
-            $user->phone,
-            "Your verification code is: {$user->code}"
-        );
+        if (!$sent) {
+            return $this->failureResponse(__('messages.failed_to_send_code'));
+        }
 
-        return $this->successResponse('Verification code resent successfully');
+        return $this->successResponse(__('messages.code_sent_successfully'));
     }
 
     public function completeProfile(CompleteProfileRequest $request)
@@ -101,33 +86,16 @@ class UserAuthController extends Controller
         $user = $request->user();
 
         if ($user->profile_completed()) {
-            return $this->failureResponse('Profile already completed');
+            return $this->failureResponse(__('messages.profile_already_completed'));
         }
 
         try {
             $this->academicProfileService->completeAcademicProfile($user, $request->validated());
 
-            return $this->successWithDataResponse([
-                'user' => new UserAuthResource($user),
-                'message' => 'Profile completed successfully'
-            ]);
-        } catch (\Exception $e) {
-            return $this->failureResponse($e->getMessage());
+            return $this->successWithDataResponse(UserAuthResource::make($user)->setToken($user->login()));
+        } catch (\Exception) {
+            return $this->failureResponse(__('messages.failed_to_complete_profile'));
         }
-    }
-
-    public function getProfile(Request $request)
-    {
-        $user = $request->user()->load([
-            'university',
-            'college',
-            'grade',
-            'secondaryType'
-        ]);
-
-        return $this->successWithDataResponse([
-            'user' => new UserAuthResource($user)
-        ]);
     }
 
     public function logout(Request $request)

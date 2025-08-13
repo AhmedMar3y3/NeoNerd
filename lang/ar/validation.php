@@ -209,6 +209,16 @@ return [
         'is_active' => 'نشط',
         'rating' => 'التقييم',
         'ratings_count' => 'عدد التقييمات',
+        'academic_level' => 'المستوى الأكاديمي',
+        'college_id' => 'الكلية',
+        'university_id' => 'الجامعة',
+        'grade_id' => 'السنة الدراسية',
+        'subject_id' => 'المادة',
+        'secondary_type' => 'نوع المدرسة الثانوية',
+        'secondary_grade' => 'الصف الدراسي',
+        'secondary_section' => 'القسم',
+        'scientific_branch' => 'الشعبة العلمية',
+
     ],
 
 ];

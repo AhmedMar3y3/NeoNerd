@@ -9,13 +9,15 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Enums\Gender;
 use App\Enums\AcademicLevel;
+use App\Enums\SecondaryType;
 use App\Enums\SecondaryGrade;
 use App\Enums\SecondarySection;
 use App\Enums\ScientificBranch;
+use mar3y\ImageUpload\Traits\HasImage;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasImage;
 
     /**
      * The attributes that are mass assignable.
@@ -38,7 +40,7 @@ class User extends Authenticatable
         'college_id',
         'grade_id',
         // Secondary flow fields
-        'secondary_type_id',
+        'secondary_type',
         'secondary_grade',
         'secondary_section',
         'scientific_branch',
@@ -64,13 +66,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'gender' => Gender::class,
         'academic_level' => AcademicLevel::class,
+        'secondary_type' => SecondaryType::class,
         'secondary_grade' => SecondaryGrade::class,
         'secondary_section' => SecondarySection::class,
         'scientific_branch' => ScientificBranch::class,
         'is_academic_details_set' => 'boolean',
     ];
 
-    // Relationships
+    protected static $imageAttributes = ['image'];
+
     public function university()
     {
         return $this->belongsTo(University::class);
@@ -84,11 +88,6 @@ class User extends Authenticatable
     public function grade()
     {
         return $this->belongsTo(Grade::class);
-    }
-
-    public function secondaryType()
-    {
-        return $this->belongsTo(SecondaryType::class);
     }
 
     public function login()
@@ -106,10 +105,7 @@ class User extends Authenticatable
 
     public function markAsVerified()
     {
-        $this->update([
-            'is_verified' => true,
-            'code' => null,
-        ]);
+        $this->update(['is_verified' => true]);
     }
 
     public function profile_completed()

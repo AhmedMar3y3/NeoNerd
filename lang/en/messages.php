@@ -39,4 +39,8 @@ return
         'logged_out' => 'Successfully logged out',
         'profile_updated_successfully' => 'Profile updated successfully',
         'profile_completion_needed' => 'Please complete your profile information',
+        'failed_to_complete_profile' => 'Failed to complete profile',
+        'profile_completed_successfully' => 'Profile completed successfully',
+        'profile_already_completed' => 'Profile already completed',
+        'invalid_term' => 'Invalid term parameter. Must be "first" or "second".'
     ];

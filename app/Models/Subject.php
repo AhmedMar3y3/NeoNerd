@@ -2,25 +2,29 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Enums\Term; 
+use App\Enums\SubjectType; 
 use App\Enums\AcademicLevel;
-use App\Enums\SubjectType;
+use App\Enums\SecondaryType;
 use App\Enums\SecondaryGrade;
 use App\Enums\SecondarySection;
+use mar3y\ImageUpload\Traits\HasImage;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Subject extends Model
 {
-    use HasFactory;
+    use HasFactory, HasImage;
 
     protected $fillable = [
         'name',
-        'description',
+        'term',
+        'image',
         'academic_level',
         'type',
         'college_type_id',
         'grade_level',
-        'secondary_type_id',
+        'secondary_type',
         'secondary_grade',
         'secondary_section',
         'is_active',
@@ -31,6 +35,8 @@ class Subject extends Model
         'type' => SubjectType::class,
         'secondary_grade' => SecondaryGrade::class,
         'secondary_section' => SecondarySection::class,
+        'secondary_type' => SecondaryType::class,
+        'term' => Term::class,
         'is_active' => 'boolean',
     ];
 
@@ -38,11 +44,6 @@ class Subject extends Model
     public function collegeType()
     {
         return $this->belongsTo(CollegeType::class);
-    }
-
-    public function secondaryType()
-    {
-        return $this->belongsTo(SecondaryType::class);
     }
 
     // Scopes for filtering
@@ -71,9 +72,9 @@ class Subject extends Model
         return $query->where('grade_level', $gradeLevel);
     }
 
-    public function scopeBySecondaryType($query, $secondaryTypeId)
+    public function scopeBySecondaryType($query, $secondaryType)
     {
-        return $query->where('secondary_type_id', $secondaryTypeId);
+        return $query->where('secondary_type', $secondaryType);
     }
 
     public function scopeBySecondaryGrade($query, $grade)
@@ -117,9 +118,11 @@ class Subject extends Model
         return $this->type === SubjectType::BOTH;
     }
 
-    // Get subjects for a specific user based on their academic profile
-    public static function getSubjectsForUser(User $user)
+    public static function getSubjectsForUser(User $user, $term = null)
     {
+        // Default to first term if not provided
+        $term = $term ?? Term::FIRST;
+        
         if ($user->isUniversityStudent()) {
             $college = $user->college;
             $grade = $user->grade;
@@ -128,12 +131,14 @@ class Subject extends Model
                 ->active()
                 ->byCollegeType($college->college_type_id)
                 ->byGradeLevel($grade->level)
+                ->where('term', $term)
                 ->get();
         } else {
             return static::secondary()
                 ->active()
-                ->bySecondaryType($user->secondary_type_id)
+                ->bySecondaryType($user->secondary_type)
                 ->bySecondaryGrade($user->secondary_grade)
+                ->where('term', $term)
                 ->where(function ($query) use ($user) {
                     if ($user->secondary_section) {
                         $query->where('secondary_section', $user->secondary_section)
@@ -142,61 +147,5 @@ class Subject extends Model
                 })
                 ->get();
         }
-    }
-
-    // Get subjects for a specific college type and grade level (for university)
-    public static function getSubjectsForCollegeType($collegeTypeId, $gradeLevel)
-    {
-        return static::university()
-            ->active()
-            ->byCollegeType($collegeTypeId)
-            ->byGradeLevel($gradeLevel)
-            ->get();
-    }
-
-    // Get subjects for a specific college and grade (for university) - convenience method
-    public static function getSubjectsForCollegeGrade($collegeId, $gradeLevel)
-    {
-        $college = College::find($collegeId);
-        if (!$college) {
-            return collect();
-        }
-        
-        return static::getSubjectsForCollegeType($college->college_type_id, $gradeLevel);
-    }
-
-    // Get subjects for a specific secondary type, grade and section
-    public static function getSubjectsForSecondaryType($secondaryTypeId, $grade, $section = null)
-    {
-        $query = static::secondary()
-            ->active()
-            ->bySecondaryType($secondaryTypeId)
-            ->bySecondaryGrade($grade);
-
-        if ($section) {
-            $query->where(function ($q) use ($section) {
-                $q->where('secondary_section', $section)
-                  ->orWhere('type', SubjectType::BOTH);
-            });
-        }
-
-        return $query->get();
-    }
-
-    // Get subjects for a specific secondary grade and section (legacy method)
-    public static function getSubjectsForSecondaryGrade($grade, $section = null)
-    {
-        $query = static::secondary()
-            ->active()
-            ->bySecondaryGrade($grade);
-
-        if ($section) {
-            $query->where(function ($q) use ($section) {
-                $q->where('secondary_section', $section)
-                  ->orWhere('type', SubjectType::BOTH);
-            });
-        }
-
-        return $query->get();
     }
 }

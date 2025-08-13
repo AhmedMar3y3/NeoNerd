@@ -14,25 +14,26 @@ return new class extends Migration
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('description')->nullable();
-            $table->string('academic_level'); // university, secondary
-            $table->string('type')->nullable(); // scientific, literal, both (for secondary)
-            
-            // For university subjects - linked to college type and grade level
+            $table->string('term');
+            $table->string('image')->nullable();
+            $table->string('academic_level', 100);
+            $table->string('type', 100)->nullable();
+
             $table->foreignId('college_type_id')->nullable()->constrained()->onDelete('cascade');
-            $table->integer('grade_level')->nullable(); // 1, 2, 3, 4, 5, 6 for university grades
-            
-            // For secondary subjects - linked to secondary type, grade level and section
-            $table->foreignId('secondary_type_id')->nullable()->constrained()->onDelete('cascade');
-            $table->string('secondary_grade')->nullable(); // first, second, third
-            $table->string('secondary_section')->nullable(); // literal, scientific
-            
+            $table->integer('grade_level')->nullable();
+
+            $table->string('secondary_type', 100)->nullable();
+            $table->string('secondary_grade', 100)->nullable();
+            $table->string('secondary_section', 100)->nullable();
+
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-            
-            // Indexes for better performance
+
             $table->index(['academic_level', 'college_type_id', 'grade_level']);
-            $table->index(['academic_level', 'secondary_type_id', 'secondary_grade', 'secondary_section']);
+            $table->index(
+                ['academic_level', 'secondary_type', 'secondary_grade', 'secondary_section'],
+                'subjects_acadlvl_sectype_grade_section_idx'
+            );
         });
     }
 

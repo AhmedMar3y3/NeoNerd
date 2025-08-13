@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('secondary_types', function (Blueprint $table) {
+        Schema::create('grades', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // arabic or language
-            $table->text('description')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->string('name');
+            $table->integer('level');
+            $table->foreignId('college_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('secondary_types');
+        Schema::dropIfExists('grades');
     }
 };
