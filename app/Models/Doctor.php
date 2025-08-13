@@ -37,4 +37,9 @@ class Doctor extends Authenticatable
     {
         return $this->belongsTo(College::class);
     }
+
+    public function courses()
+    {
+        return $this->hasMany(Course::class);
+    }
 }

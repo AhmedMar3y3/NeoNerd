@@ -2,18 +2,17 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 use App\Enums\Gender;
 use App\Enums\AcademicLevel;
 use App\Enums\SecondaryType;
 use App\Enums\SecondaryGrade;
 use App\Enums\SecondarySection;
 use App\Enums\ScientificBranch;
+use Laravel\Sanctum\HasApiTokens;
 use mar3y\ImageUpload\Traits\HasImage;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -121,5 +120,10 @@ class User extends Authenticatable
     public function isSecondaryStudent()
     {
         return $this->academic_level === AcademicLevel::SECONDARY;
+    }
+
+    public function favourites()
+    {
+        return $this->belongsToMany(Course::class, 'favourites', 'user_id', 'course_id');
     }
 }
