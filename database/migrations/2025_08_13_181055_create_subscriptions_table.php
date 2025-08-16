@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            // waiting for feedback
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('book_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('course_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('book_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('course_id')->nullable()->constrained()->cascadeOnDelete();
             $table->boolean('is_active')->default(true);
             $table->string('subscription_type');
             $table->timestamps();

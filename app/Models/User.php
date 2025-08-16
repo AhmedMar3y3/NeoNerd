@@ -126,4 +126,19 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Course::class, 'favourites', 'user_id', 'course_id');
     }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function activeSubscriptions()
+    {
+        return $this->subscriptions()->where('is_active', true);
+    }
+
+    public function hasActiveSubscription()
+    {
+        return $this->activeSubscriptions()->exists();
+    }
 }

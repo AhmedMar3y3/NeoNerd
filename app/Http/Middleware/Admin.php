@@ -19,7 +19,7 @@ class Admin
         $admin = Auth::guard('admin')->user();
 
         if (!$admin) {
-            return response()->json(['message' => 'غير مصرح: يمكن فقط للمسؤولين الوصول إلى هذا المسار'], 403);
+            return redirect()->route('loginPage')->with('error', 'غير مصرح: يمكن فقط للمسؤولين الوصول إلى هذا المسار');
         }
 
         return $next($request);

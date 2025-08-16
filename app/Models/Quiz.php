@@ -11,13 +11,13 @@ class Quiz extends Model
 
     protected $fillable = [
         'title',
-        'course_id',
+        'unit_id',
         'num_of_questions',
         'is_free',
     ];
 
-    public function course()
-    {
-        return $this->belongsTo(Course::class);
-    }
+   public function unit()
+   {
+       return $this->belongsTo(Unit::class);
+   }
 }

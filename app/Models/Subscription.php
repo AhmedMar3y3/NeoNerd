@@ -11,8 +11,14 @@ class Subscription extends Model
 
     protected $fillable = [
         'user_id',
+        'book_id',
         'course_id',
         'is_active',
+        'subscription_type',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     public function user()
@@ -23,5 +29,10 @@ class Subscription extends Model
     public function course()
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
     }
 }

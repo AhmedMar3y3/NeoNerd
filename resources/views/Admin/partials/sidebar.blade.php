@@ -64,6 +64,43 @@
                 </span>
             </a>
         </li>
+        
+        <li class="nav-item menu-items">
+            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.universities.index') }}">
+              
+                <span class="menu-title me-2">الجامعات</span>
+                <span class="menu-icon">
+                    <i class="fa fa-university"></i>
+                </span>
+            </a>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.users.index') }}">
+              
+                <span class="menu-title me-2">المستخدمين</span>
+                <span class="menu-icon">
+                    <i class="fa fa-users"></i>
+                </span>
+            </a>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.subjects.index') }}">
+              
+                <span class="menu-title me-2">المواد الدراسية</span>
+                <span class="menu-icon">
+                    <i class="fa fa-book"></i>
+                </span>
+            </a>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.banners.index') }}">
+              
+                <span class="menu-title me-2">البانرات</span>
+                <span class="menu-icon">
+                    <i class="fa fa-image"></i>
+                </span>
+            </a>
+        </li>
         {{-- <li class="nav-item menu-items">
             <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.admins.index') }}">
               
@@ -73,42 +110,6 @@
                 </span>
             </a>
         </li> --}}
-        {{-- <li class="nav-item menu-items">
-            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.categories.index') }}">
-              
-                <span class="menu-title me-2">العناصر</span>
-                <span class="menu-icon">
-                    <i class="fa fa-tags"></i>
-                </span>
-            </a>
-        </li> --}}
-        {{-- <li class="nav-item menu-items">
-            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.stores.index') }}">
-              
-                <span class="menu-title me-2">المحلات</span>
-                <span class="menu-icon">
-                    <i class="fa fa-store"></i>
-                </span>
-            </a>
-        </li> --}}
-        {{-- <li class="nav-item menu-items">
-            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.orders.index') }}">
-              
-                <span class="menu-title me-2">الطلبات</span>
-                <span class="menu-icon">
-                    <i class="fa fa-shopping-cart"></i>
-                </span>
-            </a>
-        </li> --}}
-        {{-- <li class="nav-item menu-items">
-            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.banners.index') }}">
-              
-                <span class="menu-title me-2">البانرات</span>
-                <span class="menu-icon">
-                    <i class="fa fa-image"></i>
-                </span>
-            </a>
-        </li>
         <li class="nav-item menu-items">
             <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.settings.index') }}">
                 <span class="menu-title me-2">الإعدادات</span>
@@ -117,13 +118,5 @@
                 </span>
             </a>
         </li>
-        <li class="nav-item menu-items">
-            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.reports.index') }}">
-                <span class="menu-title me-2">التقارير</span>
-                <span class="menu-icon">
-                    <i class="fa fa-chart-line"></i>
-                </span>
-            </a>
-        </li> --}}
     </ul>
 </nav>

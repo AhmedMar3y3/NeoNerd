@@ -1,0 +1,5 @@
+1. books ratings table
+2. differentiate between subscriptions of books and courses
+3. quick lessons
+4. banners
+5. settings 

@@ -21,7 +21,8 @@ return new class extends Migration
             $table->text('bio')->nullable();
             $table->string('image')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->foreignId('college_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('university_id')->nullable()->constrained()->onDelete('set null');
+            $table->boolean('is_partner')->default(false);
             $table->timestamps();
         });
     }
