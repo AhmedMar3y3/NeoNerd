@@ -108,15 +108,14 @@ class DoctorSeeder extends Seeder
         ];
 
         // Get some colleges to assign doctors to
-        $colleges = College::all();
+        $universities = \App\Models\University::all();
 
         foreach ($doctors as $index => $doctorData) {
-            // Assign each doctor to a random college
-            if ($colleges->count() > 0) {
-                $doctorData['college_id'] = $colleges->random()->id;
+            if ($universities->count() > 0) {
+                $doctorData['university_id'] = $universities->random()->id;
             }
-            
-            Doctor::create($doctorData);
+
+            \App\Models\Doctor::create($doctorData);
         }
     }
 }

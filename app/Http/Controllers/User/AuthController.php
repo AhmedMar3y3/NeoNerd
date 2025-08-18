@@ -36,9 +36,9 @@ class AuthController extends Controller
                 $user->sendVerificationCode();
             }
 
-            if (!$user->is_active) {
-                return $this->failureResponse(__('messages.user_not_active'));
-            }
+            // if (!$user->is_active) {
+            //     return $this->failureResponse(__('messages.user_not_active'));
+            // }
 
             $user->sendVerificationCode();
             $sent = HypersenderService::sendMessage($user->phone, 'كود التفعيل الخاص بك هو: ' . $user->code);
@@ -49,8 +49,10 @@ class AuthController extends Controller
             }
 
             DB::commit();
+            \Log::info('Verification code sent successfully via Hypersender', ['user_id' => $user->id, 'phone' => $user->phone]);
             return $this->successResponse(__('messages.code_sent_successfully'));
         } catch (\Exception $e) {
+            \Log::error('Exception during registerOrLogin', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             DB::rollBack();
             return $this->failureResponse(__('messages.failed_to_send_code'));
         }
