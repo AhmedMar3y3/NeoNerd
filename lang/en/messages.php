@@ -26,4 +26,6 @@ return
         'profile_already_completed' => 'Profile already completed',
         'invalid_term' => 'Invalid term parameter. Must be "first" or "second".',
         'user_not_active' => 'User is not active',
+        'personal_info_updated' => 'Personal information updated successfully',
+        'study_info_updated' => 'Study information updated successfully',
     ];

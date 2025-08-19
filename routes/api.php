@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\HomeController;
+use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\User\FavouriteController;
 use App\Http\Controllers\User\AcademicDataController;
 
 // Auth Routes //
@@ -25,57 +27,13 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::put('/update-profile-info', [\App\Http\Controllers\User\ProfileController::class, 'updatePersonalInfo']);
-    Route::put('/update-profile-studing', [\App\Http\Controllers\User\ProfileController::class, 'updateStudyInfo']);
-    Route::put('/update-phone', [\App\Http\Controllers\User\ProfileController::class, 'updatePhone']);
 
-});
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/favourites', [\App\Http\Controllers\User\FavouriteController::class, 'index']);       // list favourites
-    Route::post('/favourites', [\App\Http\Controllers\User\FavouriteController::class, 'store']);      // add to favourites
-    Route::delete('/favourites/{courseId}', [\App\Http\Controllers\User\FavouriteController::class, 'destroy']); // remove favourite
-});
+    // Profile Routes //
+    Route::put('/update-profile-info', [ProfileController::class, 'updatePersonalInfo']);
+    Route::put('/update-study-info'  , [ProfileController::class, 'updateStudyInfo']);
+    Route::put('/update-phone'       , [ProfileController::class, 'updatePhone']);
 
-
-
-Route::middleware('auth:api')->prefix('notifications')->group(function () {
-
-    // ترجع كل النوتيفيكيشن بتاعت اليوزر
-    Route::get('/', function () {
-        return response()->json(
-            auth()->user()->notifications
-        );
-    });
-
-    // تجيب نوتيفيكيشن معينة
-    Route::get('/{id}', function ($id) {
-        $notification = auth()->user()->notifications()->findOrFail($id);
-        return response()->json($notification);
-    });
-
-    // تحدد نوتيفيكيشن معين انه اتقري
-    Route::patch('/{id}/read', function ($id) {
-        $notification = auth()->user()->notifications()->findOrFail($id);
-        $notification->markAsRead();
-        return response()->json(['message' => 'Notification marked as read']);
-    });
-
-    // تعملهم كلهم مقريين
-    Route::patch('/read-all', function () {
-        auth()->user()->unreadNotifications->markAsRead();
-        return response()->json(['message' => 'All notifications marked as read']);
-    });
-
-    // تمسح نوتيفيكيشن معينة
-    Route::delete('/{id}', function ($id) {
-        $notification = auth()->user()->notifications()->findOrFail($id);
-        $notification->delete();
-        return response()->json(['message' => 'Notification deleted']);
-    });
-
-    // تمسح كل النوتيفيكيشن
-    Route::delete('/', function () {
-        auth()->user()->notifications()->delete();
-        return response()->json(['message' => 'All notifications deleted']);
-    });
+    // Favourites Routes //
+    Route::get('/favourites'              , [FavouriteController::class, 'list']);
+    Route::post('/toggle-favourite/{id}'  , [FavouriteController::class, 'toggleFavorite']);
 });

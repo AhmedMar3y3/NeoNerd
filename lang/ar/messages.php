@@ -26,4 +26,6 @@ return
         'profile_already_completed' => 'تم إكمال الملف الشخصي بالفعل',
         'invalid_term' => 'الفصل الدراسي غير صالح. يجب أن يكون "الأول" أو "الثاني".',
         'user_not_active' => 'الحساب غير مفعل',
+        'personal_info_updated' => 'تم تحديث المعلومات الشخصية بنجاح',
+        'study_info_updated' => 'تم تحديث معلومات الدراسة بنجاح',
     ];

@@ -1,60 +1,26 @@
 <?php
-
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
+use App\Models\Course;
 use App\Models\Favourite;
-use Illuminate\Http\Request;
 use App\Traits\HttpResponses;
-use App\Http\Resources\FavouriteResource;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Course\FavouriteResource;
 
 class FavouriteController extends Controller
 {
-    use HttpResponses; // <--- include trait
+    use HttpResponses;
 
-    // Add to favourites
-    public function store(Request $request)
+    public function toggleFavorite($id)
     {
-        $request->validate([
-            'course_id' => 'required|exists:courses,id',
-        ]);
-
-        $userId = auth()->id();
-
-        // Prevent duplicate favourites
-        $favourite = Favourite::firstOrCreate([
-            'user_id'   => $userId,
-            'course_id' => $request->course_id,
-        ]);
-
-        return $this->successWithDataResponse(new FavouriteResource($favourite));
+        $course = Course::findOrFail($id);
+        $result = auth()->user()->favourites()->toggle($course->id);
+        return $this->successWithDataResponse(['is_favorite' => empty($result['detached']) ? true : false]);
     }
 
-    // Remove from favourites
-    public function destroy($courseId)
+    public function list()
     {
-        $userId = auth()->id();
-
-        $deleted = Favourite::where('user_id', $userId)
-            ->where('course_id', $courseId)
-            ->delete();
-
-        if ($deleted) {
-            return $this->successResponse('Course removed from favourites');
-        }
-
-        return $this->failureResponse('Course not found in favourites');
-    }
-
-    // List favourites
-    public function index()
-    {
-        $favourites = Favourite::where('user_id', auth()->id())
-            ->with('course')
-            ->get();
-
-        return $this->successWithDataResponse(
-            FavouriteResource::collection($favourites)
-        );
+        $favourites = Favourite::where('user_id', auth()->id())->with('course')->get();
+        return $this->successWithDataResponse(FavouriteResource::collection($favourites));
     }
 }
