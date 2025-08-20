@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Filters;
 
 use App\Enums\Term;
@@ -7,8 +6,8 @@ use App\Models\Subject;
 use App\Enums\SubjectType;
 use App\Models\CollegeType;
 use App\Enums\AcademicLevel;
-use Illuminate\Http\Request;
 use App\Enums\SecondaryType;
+use Illuminate\Http\Request;
 use App\Enums\SecondaryGrade;
 use App\Enums\SecondarySection;
 use Illuminate\Database\Eloquent\Builder;
@@ -130,7 +129,7 @@ class SubjectFilter
 
     private function applySorting(Request $request, Builder $query): void
     {
-        $sortBy = $request->get('sort_by', 'created_at');
+        $sortBy    = $request->get('sort_by', 'created_at');
         $sortOrder = $request->get('sort_order', 'desc');
         $query->orderBy($sortBy, $sortOrder);
     }
@@ -138,12 +137,12 @@ class SubjectFilter
     public function getFilterOptions(): array
     {
         return [
-            'academic_levels' => AcademicLevel::cases(),
-            'terms' => Term::cases(),
-            'subject_types' => SubjectType::cases(),
-            'college_types' => CollegeType::all(),
-            'secondary_types' => SecondaryType::cases(),
-            'secondary_grades' => SecondaryGrade::cases(),
+            'academic_levels'    => AcademicLevel::cases(),
+            'terms'              => Term::cases(),
+            'subject_types'      => SubjectType::cases(),
+            'college_types'      => CollegeType::all(),
+            'secondary_types'    => SecondaryType::cases(),
+            'secondary_grades'   => SecondaryGrade::cases(),
             'secondary_sections' => SecondarySection::cases(),
         ];
     }
@@ -151,10 +150,10 @@ class SubjectFilter
     public function getStatistics(): array
     {
         return [
-            'activeSubjects' => Subject::where('is_active', true)->count(),
+            'activeSubjects'     => Subject::where('is_active', true)->count(),
             'universitySubjects' => Subject::where('academic_level', AcademicLevel::UNIVERSITY)->count(),
-            'secondarySubjects' => Subject::where('academic_level', AcademicLevel::SECONDARY)->count(),
-            'totalSubjects' => Subject::count(),
+            'secondarySubjects'  => Subject::where('academic_level', AcademicLevel::SECONDARY)->count(),
+            'totalSubjects'      => Subject::count(),
         ];
     }
 }

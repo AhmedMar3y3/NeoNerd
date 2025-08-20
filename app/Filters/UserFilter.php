@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Filters;
 
 use App\Enums\Gender;
@@ -66,8 +65,8 @@ class UserFilter
         $search = $request->search;
         $query->where(function ($q) use ($search) {
             $q->where('first_name', 'like', "%{$search}%")
-              ->orWhere('last_name', 'like', "%{$search}%")
-              ->orWhere('phone', 'like', "%{$search}%");
+                ->orWhere('last_name', 'like', "%{$search}%")
+                ->orWhere('phone', 'like', "%{$search}%");
         });
     }
 
@@ -133,7 +132,7 @@ class UserFilter
 
     private function applySorting(Request $request, Builder $query): void
     {
-        $sortBy = $request->get('sort_by', 'created_at');
+        $sortBy    = $request->get('sort_by', 'created_at');
         $sortOrder = $request->get('sort_order', 'desc');
         $query->orderBy($sortBy, $sortOrder);
     }
@@ -142,7 +141,7 @@ class UserFilter
     {
         return [
             'academic_levels' => AcademicLevel::cases(),
-            'genders' => Gender::cases(),
+            'genders'         => Gender::cases(),
         ];
     }
 }

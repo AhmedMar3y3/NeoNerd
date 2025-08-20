@@ -93,6 +93,33 @@
             </a>
         </li>
         <li class="nav-item menu-items">
+            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.doctors.index') }}">
+              
+                <span class="menu-title me-2">الأطباء</span>
+                <span class="menu-icon">
+                    <i class="fa fa-user-md"></i>
+                </span>
+            </a>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.courses.index') }}">
+              
+                <span class="menu-title me-2">الدورات</span>
+                <span class="menu-icon">
+                    <i class="fa fa-graduation-cap"></i>
+                </span>
+            </a>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.subscriptions.index') }}">
+              
+                <span class="menu-title me-2">الاشتراكات</span>
+                <span class="menu-icon">
+                    <i class="fa fa-ticket"></i>
+                </span>
+            </a>
+        </li>
+        <li class="nav-item menu-items">
             <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.banners.index') }}">
               
                 <span class="menu-title me-2">البانرات</span>

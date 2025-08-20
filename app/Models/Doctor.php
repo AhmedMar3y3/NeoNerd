@@ -20,6 +20,7 @@ class Doctor extends Authenticatable
         'image',
         'is_active',
         'college_id',
+        'is_partner'
     ];
 
     protected $hidden = [
