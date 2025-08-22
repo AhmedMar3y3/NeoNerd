@@ -23,12 +23,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout'          , [AuthController::class, 'logout']);
 
     // Home Routes //
+    Route::get('banners'          , [HomeController::class, 'banners']);
     Route::get('subjects'         , [HomeController::class, 'getUserSubjects']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
 
     // Profile Routes //
+    Route::get('/profile'            , [ProfileController::class, 'getProfile']);
     Route::put('/update-profile-info', [ProfileController::class, 'updatePersonalInfo']);
     Route::put('/update-study-info'  , [ProfileController::class, 'updateStudyInfo']);
     Route::put('/update-phone'       , [ProfileController::class, 'updatePhone']);

@@ -6,12 +6,22 @@ use App\Traits\HttpResponses;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Services\HypersenderService;
+use App\Services\AcademicProfileService;
+use App\Http\Resources\User\UserProfileResource;
 use App\Http\Requests\Auth\User\UpdateStudyInfoRequest;
 use App\Http\Requests\Auth\User\UpdatePersonalDataRequest;
 
 class ProfileController extends Controller
 {
     use HttpResponses;
+
+    public function __construct(private AcademicProfileService $academicProfileService) {}
+
+    public function getProfile()
+    {
+        return $this->successWithDataResponse(new UserProfileResource(Auth::user()));
+    }
+
     public function updatePersonalInfo(UpdatePersonalDataRequest $request)
     {
         $user = Auth::user();
@@ -22,8 +32,13 @@ class ProfileController extends Controller
     public function updateStudyInfo(UpdateStudyInfoRequest $request)
     {
         $user = Auth::user();
-        $user->update($request->validated());
-        return $this->successResponse(__('messages.study_info_updated'));
+        
+        try {
+            $this->academicProfileService->updateAcademicProfile($user, $request->validated());
+            return $this->successResponse(__('messages.study_info_updated'));
+        } catch (\Exception $e) {
+            return $this->failureResponse($e->getMessage());
+        }
     }
 
     public function updatePhone(Request $request)
@@ -48,5 +63,4 @@ class ProfileController extends Controller
             return $this->failureResponse(__('messages.failed_to_update_phone'));
         }
     }
-
 }

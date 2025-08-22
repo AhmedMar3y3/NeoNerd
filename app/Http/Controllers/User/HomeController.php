@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Enums\Term;
+use App\Models\Banner;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 use App\Traits\HttpResponses;
@@ -12,6 +13,11 @@ use App\Http\Resources\Home\SubjectsResource;
 class HomeController extends Controller
 {
     use HttpResponses;
+
+    public function banners()
+    {
+        return $this->successWithDataResponse(Banner::get(['id','title','image']));
+    }
 
     public function getUserSubjects(Request $request)
     {
