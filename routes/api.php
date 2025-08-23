@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\HomeController;
-use App\Http\Controllers\User\CourseController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\FavouriteController;
 use App\Http\Controllers\User\AcademicDataController;
@@ -22,6 +22,7 @@ Route::get('grades'       , [AcademicDataController::class, 'getGradesByCollege'
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('complete-profile', [AuthController::class, 'completeProfile']);
     Route::post('logout'          , [AuthController::class, 'logout']);
+    Route::get('fetch-settings'   , [Controller::class, 'fetchSettings']);
     
     // Profile Routes //
     Route::get('/profile'            , [ProfileController::class, 'getProfile']);

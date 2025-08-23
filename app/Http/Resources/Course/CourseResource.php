@@ -19,7 +19,7 @@ class CourseResource extends JsonResource
         return [
             'id'            => $this->id,
             'title'         => $this->title,
-            'image'         => $this->image ?? env('APP_URL') . '/defaults/subject.png',
+            'image'         => $this->image ?? env('APP_URL') . '/defaults/course.png',
             'rating'        => $this->rating,
             'is_free'       => $this->is_free,
             'subject_id'    => $this->subject_id,
@@ -28,6 +28,5 @@ class CourseResource extends JsonResource
             'doctor_image'  => $this->doctor->image ?? env('APP_URL') . '/defaults/profile.webp',
             'is_subscribed' => $isSubscribed,
         ];
-
     }
 }
