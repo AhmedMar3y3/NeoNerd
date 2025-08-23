@@ -22,17 +22,7 @@ Route::get('grades'       , [AcademicDataController::class, 'getGradesByCollege'
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('complete-profile', [AuthController::class, 'completeProfile']);
     Route::post('logout'          , [AuthController::class, 'logout']);
-
-    // Home Routes //
-    Route::get('banners'          , [HomeController::class, 'banners']);
-    Route::get('subjects'           , [HomeController::class, 'getUserSubjects']);
-    Route::get('recommended-courses', [HomeController::class, 'getRecommendedCourses']);
-    Route::get('newest-courses'     , [HomeController::class, 'getNewestCourses']);
-    Route::get('courses/{id}'       , [HomeController::class, 'getCourseDetails']);
-});
-
-Route::middleware('auth:sanctum')->group(function () {
-
+    
     // Profile Routes //
     Route::get('/profile'            , [ProfileController::class, 'getProfile']);
     Route::put('/update-profile-info', [ProfileController::class, 'updatePersonalInfo']);
@@ -43,10 +33,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/favourites'              , [FavouriteController::class, 'list']);
     Route::post('/toggle-favourite/{id}'  , [FavouriteController::class, 'toggleFavorite']);
 
-    //routes for courses
-    // Route::get('/user/courses', [CourseController::class, 'getUserCourses']);
-    // Route::get('/user/courses/newest', [CourseController::class, 'getNewestUserCourses']);
-    // Route::get('/courses/{id}', [CourseController::class, 'getCourse']);
-
+    // Home Routes //
+    Route::get('banners'              , [HomeController::class, 'banners']);
+    Route::get('subjects'             , [HomeController::class, 'getUserSubjects']);
+    Route::get('recommended-courses'  , [HomeController::class, 'getRecommendedCourses']);
+    Route::get('newest-courses'       , [HomeController::class, 'getNewestCourses']);
+    Route::get('courses/{id}'         , [HomeController::class, 'getCourseDetails']);
+    Route::get('courses-ratings/{id}' , [HomeController::class, 'courseRatings']);
+    Route::post('rate-course/{id}'    , [HomeController::class, 'rateCourse']);
 
 });

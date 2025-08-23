@@ -28,4 +28,7 @@ return
         'user_not_active' => 'الحساب غير مفعل',
         'personal_info_updated' => 'تم تحديث المعلومات الشخصية بنجاح',
         'study_info_updated' => 'تم تحديث معلومات الدراسة بنجاح',
+        'rating_submitted' => 'تم تقديم التقييم بنجاح',
+        'already_rated' => 'لقد قمت بتقييم هذه الدورة بالفعل',
+        'subscription_required' => 'يجب أن تكون مشتركًا في هذه الدورة لتتمكن من تقييمها.',
     ];

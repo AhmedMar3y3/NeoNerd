@@ -4,6 +4,8 @@ namespace App\Http\Resources\Course;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Unit\UnitWithLessonResource;
+use App\Http\Resources\Unit\UnitWithoutLessonsResource;
 
 class CourseDetailsResource extends JsonResource
 {
@@ -26,20 +28,21 @@ class CourseDetailsResource extends JsonResource
             'id'            => $this->id,
             'title'         => $this->title,
             'description'   => $this->description,
-            'image'         => $this->image ? asset('storage/' . $this->image) : null,
+            'image'         => $this->image ?? env('APP_URL') . '/defaults/course.png',
+            'subject_name'  => $this->subject->name,
             'rating'        => $this->rating,
             'ratings_count' => $this->ratings_count,
             'doctor_name'   => $this->doctor->name,
-            'is_subscribed' => $this->isSubscribed,
+            'doctor_image'  => $this->doctor->image ?? env('APP_URL') . '/defaults/profile.webp',
+            'doctor_bio'    => $this->doctor->specialization . ' - ' . $this->doctor->college->university->name,
+            'is_favorited' => $this->isFavorited(),
             'units'         => $this->isSubscribed 
-                ? \App\Http\Resources\UniteWithLessonResource::collection($this->whenLoaded('units'))
-                : \App\Http\Resources\UnitWithoutLessonsResource::collection($this->whenLoaded('units')),
+                ? UnitWithLessonResource::collection($this->whenLoaded('units'))
+                : UnitWithoutLessonsResource::collection($this->whenLoaded('units')),
         ];
 
-        // Add price for unsubscribed users
         if (!$this->isSubscribed) {
             $data['price'] = $this->price;
-            $data['is_free'] = (bool) $this->is_free;
         }
 
         return $data;

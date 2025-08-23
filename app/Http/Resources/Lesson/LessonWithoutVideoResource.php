@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Lesson;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LessonResource extends JsonResource
+class LessonWithoutVideoResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,14 +17,11 @@ class LessonResource extends JsonResource
         return [
             'id'        => $this->id,
             'title'     => $this->title,
-            'is_free'   => (bool) $this->is_free,
-            'video_url' => $this->video_url,
+            'is_free'   => $this->is_free,
+            ...($this->is_free ? ['video_url' => $this->video_url] : []),
             'duration'  => $this->duration,
-            'has_file'  => (bool) $this->has_file,
-            'file'      => $this->file ? asset('storage/' . $this->file) : null,
-
-            // If you want to include unit info
-
+            // 'has_file'  => $this->has_file,
+            // 'file'      => $this->file ? asset('storage/' . $this->file) : null,
         ];
     }
 }

@@ -28,4 +28,7 @@ return
         'user_not_active' => 'User is not active',
         'personal_info_updated' => 'Personal information updated successfully',
         'study_info_updated' => 'Study information updated successfully',
+        'rating_submitted' => 'Rating submitted successfully',
+        'already_rated' => 'You have already rated this course.',
+        'subscription_required' => 'You must be subscribed to this course to rate it.',
     ];

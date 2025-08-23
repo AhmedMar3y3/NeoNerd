@@ -141,4 +141,9 @@ class User extends Authenticatable
     {
         return $this->activeSubscriptions()->exists();
     }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
 }

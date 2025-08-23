@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Unit;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Lesson\LessonWithoutVideoResource;
 
-class UniteWithLessonResource extends JsonResource
+class UnitWithoutLessonsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,7 +18,7 @@ class UniteWithLessonResource extends JsonResource
         return [
             'id'      => $this->id,
             'title'   => $this->title,
-            'lessons' => LessonResource::collection($this->whenLoaded('lessons')), // نجيب الدروس
+            'lessons' => LessonWithoutVideoResource::collection($this->whenLoaded('lessons')),
         ];
     }
 }

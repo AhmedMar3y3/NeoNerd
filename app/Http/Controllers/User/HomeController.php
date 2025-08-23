@@ -1,28 +1,28 @@
 <?php
-
 namespace App\Http\Controllers\User;
 
 use App\Enums\AcademicLevel;
 use App\Enums\Term;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Rating\StoreRatingRequest;
+use App\Http\Resources\Course\CourseDetailsResource;
+use App\Http\Resources\Course\CourseResource;
+use App\Http\Resources\Course\RatingsResource;
+use App\Http\Resources\Home\SubjectsResource;
 use App\Models\Banner;
 use App\Models\Course;
 use App\Models\Subject;
 use App\Models\Subscription;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\Course\CourseResource;
-use App\Http\Resources\Course\CourseDetailsResource;
-use App\Http\Resources\Home\SubjectsResource;
 
 class HomeController extends Controller
 {
     use HttpResponses;
 
-    
     public function banners()
     {
-        return $this->successWithDataResponse(Banner::get(['id','title','image']));
+        return $this->successWithDataResponse(Banner::get(['id', 'title', 'image']));
     }
 
     public function getUserSubjects(Request $request)
@@ -80,7 +80,7 @@ class HomeController extends Controller
     public function getCourseDetails(Request $request, $id)
     {
         $user = $request->user();
-        
+
         $isSubscribed = Subscription::where('user_id', $user->id)
             ->where('course_id', $id)
             ->where('is_active', true)
@@ -89,22 +89,49 @@ class HomeController extends Controller
         if ($isSubscribed) {
             $course = Course::with([
                 'units.lessons',
-                'doctor'
+                'doctor',
             ])
-            ->withAvg('ratings', 'rating')
-            ->withCount('ratings')
-            ->findOrFail($id);
+                ->withAvg('ratings', 'rating')
+                ->withCount('ratings')
+                ->findOrFail($id);
         } else {
             $course = Course::with([
                 'units.lessons',
-                'doctor'
+                'doctor',
             ])
-            ->withAvg('ratings', 'rating')
-            ->withCount('ratings')
-            ->findOrFail($id);
+                ->findOrFail($id);
         }
 
         return $this->successWithDataResponse(new CourseDetailsResource($course, $isSubscribed));
+    }
+
+    public function courseRatings($id)
+    {
+        $course = Course::where('id', $id)->first();
+        $course->setRelation('ratings', $course->ratings()->whereNotNull('review')->get());
+        return $this->successWithDataResponse(RatingsResource::collection($course->ratings));
+    }
+
+    public function rateCourse(StoreRatingRequest $request, $id)
+    {
+        $user = $request->user();
+
+        $isSubscribed = Subscription::where('user_id', $user->id)
+            ->where('course_id', $id)
+            ->where('is_active', true)
+            ->exists();
+
+        if (! $isSubscribed) {
+            return $this->failureResponse(__('messages.subscription_required'));
+        }
+
+        $existingRating = $user->ratings()->where('course_id', $id)->first();
+        if ($existingRating) {
+            return $this->failureResponse(__('messages.already_rated'));
+        }
+
+        $user->ratings()->create($request->validated() + ['course_id' => $id]);
+        return $this->successResponse(__('messages.added_successfully'));
     }
 
     private function buildUserCoursesQuery($user, $subjectId = null)
