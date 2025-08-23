@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\HomeController;
+use App\Http\Controllers\User\CourseController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\FavouriteController;
 use App\Http\Controllers\User\AcademicDataController;
@@ -24,7 +25,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Home Routes //
     Route::get('banners'          , [HomeController::class, 'banners']);
-    Route::get('subjects'         , [HomeController::class, 'getUserSubjects']);
+    Route::get('subjects'           , [HomeController::class, 'getUserSubjects']);
+    Route::get('recommended-courses', [HomeController::class, 'getRecommendedCourses']);
+    Route::get('newest-courses'     , [HomeController::class, 'getNewestCourses']);
+    Route::get('courses/{id}'       , [HomeController::class, 'getCourseDetails']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -38,4 +42,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Favourites Routes //
     Route::get('/favourites'              , [FavouriteController::class, 'list']);
     Route::post('/toggle-favourite/{id}'  , [FavouriteController::class, 'toggleFavorite']);
+
+    //routes for courses
+    // Route::get('/user/courses', [CourseController::class, 'getUserCourses']);
+    // Route::get('/user/courses/newest', [CourseController::class, 'getNewestUserCourses']);
+    // Route::get('/courses/{id}', [CourseController::class, 'getCourse']);
+
+
 });

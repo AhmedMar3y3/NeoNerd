@@ -1,11 +1,10 @@
 <?php
-
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use mar3y\ImageUpload\Traits\HasImage;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Course extends Model
 {
@@ -23,7 +22,10 @@ class Course extends Model
         'subject_id',
         'doctor_id',
     ];
-
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
     public function subject()
     {
         return $this->belongsTo(Subject::class);
@@ -37,6 +39,11 @@ class Course extends Model
     public function units()
     {
         return $this->hasMany(Unit::class);
+    }
+
+    public function college()
+    {
+        return $this->belongsTo(College::class, 'college_id');
     }
 
     public function lessons()

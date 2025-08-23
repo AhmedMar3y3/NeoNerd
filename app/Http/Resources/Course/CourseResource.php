@@ -15,16 +15,15 @@ class CourseResource extends JsonResource
     {
         return [
             'id'            => $this->id,
-            'title'         => $this->title ?? null,
-            'image'         => $this->image,
-            'description'   => $this->description ?? null,
-            'rating'        => $this->rating ?? 0,
-            'ratings_count' => $this->ratings_count ?? 0,
-            'price'         => $this->price ?? null,
-            'is_free'       => (bool) $this->is_free,
-            'is_active'     => (bool) $this->is_active,
-            'subject_id'    => $this->subject_id ?? null,
-            'doctor_id'     => $this->doctor_id ?? null,
+            'title'         => $this->title,
+            'image'         => $this->image ?? env('APP_URL') . '/defaults/subject.png',
+            'rating'        => $this->rating,
+            'is_free'       => $this->is_free,
+            'subject_id'    => $this->subject_id,
+            'subject_name'  => $this->subject->name,
+            'doctor_name'   => $this->doctor->name,
+            'doctor_image'  => $this->doctor->image ?? env('APP_URL') . '/defaults/profile.webp',
         ];
+
     }
 }
