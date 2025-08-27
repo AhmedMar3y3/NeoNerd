@@ -1049,9 +1049,6 @@
 
 <!-- Bulk Action Form -->
 <form id="bulk-action-form" method="POST" action="{{ route('admin.subscriptions.bulk-action') }}" style="display: none;">
-    @csrf
-    <input type="hidden" name="action" id="bulk-action-type">
-    <input type="hidden" name="subscription_ids" id="bulk-action-ids">
 </form>
 
 <script>
@@ -1098,9 +1095,34 @@ function bulkAction(action) {
     if (confirm(confirmMessage)) {
         const subscriptionIds = Array.from(checkedBoxes).map(checkbox => checkbox.value);
         
-        document.getElementById('bulk-action-type').value = action;
-        document.getElementById('bulk-action-ids').value = JSON.stringify(subscriptionIds);
-        document.getElementById('bulk-action-form').submit();
+        // Create a proper form with array inputs
+        const form = document.getElementById('bulk-action-form');
+        form.innerHTML = ''; // Clear existing inputs
+        
+        // Add CSRF token
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_token';
+        csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        form.appendChild(csrfInput);
+        
+        // Add action
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = action;
+        form.appendChild(actionInput);
+        
+        // Add subscription IDs as array
+        subscriptionIds.forEach(id => {
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'subscription_ids[]';
+            idInput.value = id;
+            form.appendChild(idInput);
+        });
+        
+        form.submit();
     }
 }
 </script>

@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\UniversityController;
 use App\Http\Controllers\Admin\SubscriptionController;
 
 require __DIR__.'/doctor.php';
+require __DIR__.'/assistant.php';
 
 // public routes //
 Route::get('/',            [AuthController::class, 'loadLoginPage'])->name('loginPage');

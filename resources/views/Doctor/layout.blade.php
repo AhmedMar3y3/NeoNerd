@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="ar">
-    @include('Store.partials.head')
+    @include('Doctor.partials.head')
     <body>
         <div class="container-scroller">
            
             <div class="container-fluid page-body-wrapper">
-                @include('Store.partials.navbar')
+                @include('Doctor.partials.navbar')
                 <div class="main-panel" >
                     <div class="content-wrapper" style="background-color: #0F172A">
                         <main id="main" class="main" >
                             @yield('main')
                         </main>
                     </div>
-                    @include('Store.partials.footer')
+                    @include('Doctor.partials.footer')
                 </div>
             </div>
-            @include('Store.partials.sidebar')
+            @include('Doctor.partials.sidebar')
         </div>
-        @include('Store.partials.scripts')
+        @include('Doctor.partials.scripts')
     </body>
 </html>

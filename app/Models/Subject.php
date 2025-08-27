@@ -148,4 +148,20 @@ class Subject extends Model
                 ->get();
         }
     }
+
+
+    public function getDisplayNameAttribute()
+    {
+        $name = $this->name;
+        
+        if ($this->academic_level === AcademicLevel::UNIVERSITY) {
+            $level = $this->grade_level ? "السنة {$this->grade_level}" : '';
+            $college = $this->collegeType ? " - {$this->collegeType->name}" : '';
+            return $name . ($level ? " ({$level}{$college})" : '');
+        } else {
+            $grade = $this->secondary_grade ? $this->secondary_grade->getLocalizedName() : '';
+            $section = $this->secondary_section ? " - {$this->secondary_section->getLocalizedName()}" : '';
+            return $name . ($grade ? " ({$grade}{$section})" : '');
+        }
+    }
 }

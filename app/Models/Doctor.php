@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use mar3y\ImageUpload\Traits\HasImage;
 
 class Doctor extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasImage;
 
     protected $fillable = [
         'name',
@@ -33,6 +34,8 @@ class Doctor extends Authenticatable
         'is_active' => 'boolean',
     ];
 
+    protected static $imageAttributes = ['image'];
+
     public function college()
     {
         return $this->belongsTo(College::class);
@@ -41,5 +44,10 @@ class Doctor extends Authenticatable
     public function courses()
     {
         return $this->hasMany(Course::class);
+    }
+
+    public function assistants()
+    {
+        return $this->hasMany(Assistant::class);
     }
 }

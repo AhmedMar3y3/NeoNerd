@@ -22,6 +22,9 @@ class Course extends Model
         'subject_id',
         'doctor_id',
     ];
+
+    protected static $imageAttributes = ['image'];
+
     public function ratings()
     {
         return $this->hasMany(Rating::class);
@@ -59,5 +62,10 @@ class Course extends Model
     public function isFavorited()
     {
         return $this->favoritedBy()->where('user_id', Auth::id())->exists();
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
     }
 }

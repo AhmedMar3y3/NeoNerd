@@ -1,9 +1,10 @@
 <!-- resources/views/partials/sidebar.blade.php -->
 <style>
-    .sidebar .nav .nav-item.active > .nav-link {
+    .sidebar .nav .nav-item.active>.nav-link {
         background: #8f8f8f !important;
     }
-    .sidebar .nav:not(.sub-menu) > .nav-item:hover:not(.nav-category):not(.account-dropdown) > .nav-link {
+
+    .sidebar .nav:not(.sub-menu)>.nav-item:hover:not(.nav-category):not(.account-dropdown)>.nav-link {
         background: #8f8f8f !important;
         color: #0F172A !important;
     }
@@ -17,17 +18,17 @@
             <a class="nav-link " id="profileDropdown" href="#" data-bs-toggle="dropdown">
                 <div class="navbar-profile d-flex gap-2" style="color: white">
 
-                    <p class="mb-0 d-none d-sm-block navbar-profile-name">{{ Auth::guard('store')->user()->name }}</p>
+                    <p class="mb-0 d-none d-sm-block navbar-profile-name">{{ Auth::guard('doctor')->user()->name }}</p>
                     <i class="mdi mdi-menu-down d-none d-sm-block"></i>
-                    <img class="img-xs rounded-circle" 
-                            src="{{ Auth::guard('store')->user()->image ? asset(Auth::guard('store')->user()->image) : asset('assets/images/dashboard/avatar.png') }}" 
-                            alt="">
+                    <img class="img-xs rounded-circle"
+                        src="{{ Auth::guard('doctor')->user()->image ? asset(Auth::guard('doctor')->user()->image) : asset('assets/images/dashboard/avatar.png') }}"
+                        alt="">
                 </div>
             </a>
             <div class="dropdown-menu dropdown-menu-end navbar-dropdown preview-list" aria-labelledby="profileDropdown"
                 style="background: white">
                 <a class="dropdown-item preview-item d-flex align-items-center justify-content-center"
-                    href="{{ route('store.logout') }}"
+                    href="{{ route('doctor.logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <div class="preview-thumbnail">
                         <div class="preview-icon bg-dark rounded-circle">
@@ -38,7 +39,7 @@
                         <p class="preview-subject mb-1 " style="color: black">Log out</p>
                     </div>
                 </a>
-                <form id="logout-form" action="{{ route('store.logout') }}" method="POST" style="display: none;">
+                <form id="logout-form" action="{{ route('doctor.logout') }}" method="POST" style="display: none;">
                     @csrf
                 </form>
             </div>
@@ -50,12 +51,12 @@
                 <div class="profile-pic d-flex align-items-center justify-content-end gap-2 w-100">
 
                     <div class="profile-name">
-                        <h5 class="mb-0 font-weight-normal">{{ Auth::guard('store')->user()->name }}</h5>
+                        <h5 class="mb-0 font-weight-normal">{{ Auth::guard('doctor')->user()->name }}</h5>
                         <span>online</span>
                     </div>
                     <div class="count-indicator">
-                        <img class="img-xs rounded-circle" 
-                            src="{{ Auth::guard('store')->user()->image ? asset(Auth::guard('store')->user()->image) : asset('assets/images/dashboard/avatar.png') }}" 
+                        <img class="img-xs rounded-circle"
+                            src="{{ Auth::guard('doctor')->user()->image ? asset(Auth::guard('doctor')->user()->image) : asset('assets/images/dashboard/avatar.png') }}"
                             alt="">
                         <span class="count bg-success"></span>
                     </div>
@@ -64,7 +65,7 @@
         </li>
 
         <li class="nav-item menu-items my-1">
-            <a class="nav-link d-flex gap-2" href="{{ route('store.dashboard') }}">
+            <a class="nav-link d-flex gap-2" href="{{ route('doctor.dashboard') }}">
 
                 <span class="menu-title ms-5">الصفحة الرئيسية</span>
                 <span class="menu-icon">
@@ -72,35 +73,36 @@
                 </span>
             </a>
         </li>
-        <li class="nav-item menu-items">
-            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('store.orders.index') }}">
 
-                <span class="menu-title me-2">الطلبات</span>
+        <li class="nav-item menu-items">
+            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('doctor.courses.index') }}">
+
+                <span class="menu-title me-2">الدورات</span>
                 <span class="menu-icon">
-                    <i class="fa fa-shopping-cart"></i>
+                    <i class="fa fa-graduation-cap"></i>
                 </span>
             </a>
         </li>
         <li class="nav-item menu-items">
-            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('store.categories.index') }}">
+            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('doctor.assistants.index') }}">
 
-                <span class="menu-title me-2">الفئات</span>
+                <span class="menu-title me-2">المساعدين</span>
                 <span class="menu-icon">
-                    <i class="fa fa-tags"></i>
+                    <i class="fa fa-users"></i>
                 </span>
             </a>
         </li>
         <li class="nav-item menu-items">
-            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('store.products.index') }}">
+            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('doctor.subscriptions.index') }}">
 
-                <span class="menu-title me-2">المنتجات</span>
+                <span class="menu-title me-2">الاشتراكات</span>
                 <span class="menu-icon">
-                    <i class="fa fa-cubes"></i>
+                    <i class="fa fa-ticket"></i>
                 </span>
             </a>
         </li>
         <li class="nav-item menu-items">
-            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('store.profile.index') }}">
+            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('doctor.profile.index') }}">
 
                 <span class="menu-title me-2">البيانات الشخصية</span>
                 <span class="menu-icon">
