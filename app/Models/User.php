@@ -91,6 +91,7 @@ class User extends Authenticatable
 
     public function login()
     {
+        $this->tokens()->delete();        
         return $this->createToken('user-token')->plainTextToken;
     }
 
