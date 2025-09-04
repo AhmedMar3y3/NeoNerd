@@ -44,6 +44,18 @@ class UpdateSettingsRequest extends BaseRequest
                 'min:11',
                 'max:15'
             ],
+
+            'android_version' => [
+                'required',
+                'string',
+                'max:50'
+            ],
+
+            'ios_version' => [
+                'required',
+                'string',
+                'max:50'
+            ],
         ];
     }
 }

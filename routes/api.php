@@ -7,6 +7,7 @@ use App\Http\Controllers\User\HomeController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\FavouriteController;
 use App\Http\Controllers\User\AcademicDataController;
+use App\Http\Controllers\Public\VersionController;
 
 // Auth Routes //
 Route::post('register-or-login', [AuthController::class, 'registerOrLogin']);
@@ -18,6 +19,9 @@ Route::get('academic-data', [AcademicDataController::class, 'getAcademicData']);
 Route::get('universities' , [AcademicDataController::class, 'getUniversities']);
 Route::get('colleges'     , [AcademicDataController::class, 'getCollegesByUniversity']);
 Route::get('grades'       , [AcademicDataController::class, 'getGradesByCollege']);
+
+// Public Version Routes //
+Route::get('app-versions', [VersionController::class, 'getVersions']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('complete-profile', [AuthController::class, 'completeProfile']);

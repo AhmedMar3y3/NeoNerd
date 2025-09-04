@@ -588,6 +588,96 @@
                     </div>
                 </div>
             </div>
+
+            <!-- App Version Settings -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-mobile-alt"></i>
+                        إصدارات التطبيق
+                    </h3>
+                    <p class="card-subtitle">إدارة إصدارات تطبيقات الهاتف المحمول</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="android_version" class="form-label">
+                        <i class="fab fa-android"></i>
+                        إصدار Android
+                    </label>
+                    <input type="text" 
+                           class="form-control @error('android_version') is-invalid @enderror" 
+                           id="android_version" 
+                           name="android_version" 
+                           value="{{ $data['android_version'] ?? '' }}" 
+                           placeholder="1.0.0"
+                           required>
+                    @error('android_version')
+                        <div class="invalid-feedback">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {{ $message }}
+                        </div>
+                    @enderror
+                    <div class="form-text">
+                        <i class="fas fa-info-circle"></i>
+                        إصدار تطبيق Android الحالي
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ios_version" class="form-label">
+                        <i class="fab fa-apple"></i>
+                        إصدار iOS
+                    </label>
+                    <input type="text" 
+                           class="form-control @error('ios_version') is-invalid @enderror" 
+                           id="ios_version" 
+                           name="ios_version" 
+                           value="{{ $data['ios_version'] ?? '' }}" 
+                           placeholder="1.0.0"
+                           required>
+                    @error('ios_version')
+                        <div class="invalid-feedback">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {{ $message }}
+                        </div>
+                    @enderror
+                    <div class="form-text">
+                        <i class="fas fa-info-circle"></i>
+                        إصدار تطبيق iOS الحالي
+                    </div>
+                </div>
+
+                <!-- Version Preview Section -->
+                <div class="card-header" style="margin-top: 2rem;">
+                    <h3 class="card-title">
+                        <i class="fas fa-eye"></i>
+                        معاينة الإصدارات
+                    </h3>
+                    <p class="card-subtitle">كيف ستظهر الإصدارات للمستخدمين</p>
+                </div>
+
+                <div class="version-preview">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fab fa-android social-icon" style="background: #3ddc84; color: white;"></i>
+                            إصدار Android
+                        </label>
+                        <div class="form-control" style="background: rgba(255,255,255,0.02); cursor: default;">
+                            {{ $data['android_version'] ?? 'لم يتم تحديد الإصدار' }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fab fa-apple social-icon" style="background: #000; color: white;"></i>
+                            إصدار iOS
+                        </label>
+                        <div class="form-control" style="background: rgba(255,255,255,0.02); cursor: default;">
+                            {{ $data['ios_version'] ?? 'لم يتم تحديد الإصدار' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Save Button -->

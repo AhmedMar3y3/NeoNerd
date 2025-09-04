@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CourseSeeder::class,
             AssistantSeeder::class,
+            VersionSettingsSeeder::class,
         ]);
     }
 }
