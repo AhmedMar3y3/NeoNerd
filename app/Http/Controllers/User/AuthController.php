@@ -41,11 +41,14 @@ class AuthController extends Controller
             }
 
             $user->sendVerificationCode();
-            $sent = HypersenderService::sendMessage($user->phone, 'كود التفعيل الخاص بك هو: ' . $user->code);
+            
+            if ($user->phone !== '201070423719') {
+                $sent = HypersenderService::sendMessage($user->phone, 'كود التفعيل الخاص بك هو: ' . $user->code);
 
-            if (!$sent) {
-                DB::rollBack();
-                return $this->failureResponse(__('messages.failed_to_send_code'));
+                if (!$sent) {
+                    DB::rollBack();
+                    return $this->failureResponse(__('messages.failed_to_send_code'));
+                }
             }
 
             DB::commit();
@@ -77,10 +80,14 @@ class AuthController extends Controller
         }
 
         $user->sendVerificationCode();
-        $sent = HypersenderService::sendMessage($user->phone, 'كود التفعيل الخاص بك هو: ' . $user->code);
+        
+        // Skip SMS sending for test user
+        if ($user->phone !== '201070423719') {
+            $sent = HypersenderService::sendMessage($user->phone, 'كود التفعيل الخاص بك هو: ' . $user->code);
 
-        if (!$sent) {
-            return $this->failureResponse(__('messages.failed_to_send_code'));
+            if (!$sent) {
+                return $this->failureResponse(__('messages.failed_to_send_code'));
+            }
         }
 
         return $this->successResponse(__('messages.code_sent_successfully'));
