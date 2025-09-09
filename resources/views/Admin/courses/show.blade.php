@@ -422,7 +422,7 @@
         <div class="course-header">
             <div class="course-image">
                 @if($course->image)
-                    <img src="{{ asset('storage/' . $course->image) }}" alt="{{ $course->title }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 15px;">
+                    <img src="{{ asset($course->image) }}" alt="{{ $course->title }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 15px;">
                 @else
                     {{ strtoupper(substr($course->title, 0, 1)) }}
                 @endif

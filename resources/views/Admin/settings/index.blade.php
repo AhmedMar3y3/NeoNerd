@@ -600,18 +600,19 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="android_version" class="form-label">
-                        <i class="fab fa-android"></i>
-                        إصدار Android
+                    <label for="version" class="form-label">
+                        <i class="fas fa-code-branch"></i>
+                        رقم الإصدار الحالي
                     </label>
                     <input type="text" 
-                           class="form-control @error('android_version') is-invalid @enderror" 
-                           id="android_version" 
-                           name="android_version" 
-                           value="{{ $data['android_version'] ?? '' }}" 
-                           placeholder="1.0.0"
+                           class="form-control @error('version') is-invalid @enderror" 
+                           id="version" 
+                           name="version" 
+                           value="{{ $data['version'] ?? '' }}" 
+                           placeholder="مثال: 1.0.0"
+                           maxlength="50"
                            required>
-                    @error('android_version')
+                    @error('version')
                         <div class="invalid-feedback">
                             <i class="fas fa-exclamation-circle"></i>
                             {{ $message }}
@@ -619,23 +620,23 @@
                     @enderror
                     <div class="form-text">
                         <i class="fas fa-info-circle"></i>
-                        إصدار تطبيق Android الحالي
+                        رقم إصدار التطبيق الحالي (مثال: 1.0.0)
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="ios_version" class="form-label">
-                        <i class="fab fa-apple"></i>
-                        إصدار iOS
+                    <label for="android_link" class="form-label">
+                        <i class="fab fa-android"></i>
+                        رابط تطبيق Android
                     </label>
-                    <input type="text" 
-                           class="form-control @error('ios_version') is-invalid @enderror" 
-                           id="ios_version" 
-                           name="ios_version" 
-                           value="{{ $data['ios_version'] ?? '' }}" 
-                           placeholder="1.0.0"
+                    <input type="url" 
+                           class="form-control @error('android_link') is-invalid @enderror" 
+                           id="android_link" 
+                           name="android_link" 
+                           value="{{ $data['android_link'] ?? '' }}" 
+                           placeholder="https://play.google.com/store/apps/details?id=your.app"
                            required>
-                    @error('ios_version')
+                    @error('android_link')
                         <div class="invalid-feedback">
                             <i class="fas fa-exclamation-circle"></i>
                             {{ $message }}
@@ -643,7 +644,31 @@
                     @enderror
                     <div class="form-text">
                         <i class="fas fa-info-circle"></i>
-                        إصدار تطبيق iOS الحالي
+                        رابط تطبيق Android على Google Play
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ios_link" class="form-label">
+                        <i class="fab fa-apple"></i>
+                        رابط تطبيق iOS
+                    </label>
+                    <input type="url" 
+                           class="form-control @error('ios_link') is-invalid @enderror" 
+                           id="ios_link" 
+                           name="ios_link" 
+                           value="{{ $data['ios_link'] ?? '' }}" 
+                           placeholder="https://apps.apple.com/app/idXXXXXXXXX"
+                           required>
+                    @error('ios_link')
+                        <div class="invalid-feedback">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {{ $message }}
+                        </div>
+                    @enderror
+                    <div class="form-text">
+                        <i class="fas fa-info-circle"></i>
+                        رابط تطبيق iOS على App Store
                     </div>
                 </div>
 
@@ -653,31 +678,6 @@
                         <i class="fas fa-eye"></i>
                         معاينة الإصدارات
                     </h3>
-                    <p class="card-subtitle">كيف ستظهر الإصدارات للمستخدمين</p>
-                </div>
-
-                <div class="version-preview">
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fab fa-android social-icon" style="background: #3ddc84; color: white;"></i>
-                            إصدار Android
-                        </label>
-                        <div class="form-control" style="background: rgba(255,255,255,0.02); cursor: default;">
-                            {{ $data['android_version'] ?? 'لم يتم تحديد الإصدار' }}
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fab fa-apple social-icon" style="background: #000; color: white;"></i>
-                            إصدار iOS
-                        </label>
-                        <div class="form-control" style="background: rgba(255,255,255,0.02); cursor: default;">
-                            {{ $data['ios_version'] ?? 'لم يتم تحديد الإصدار' }}
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Save Button -->

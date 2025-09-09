@@ -45,16 +45,20 @@ class UpdateSettingsRequest extends BaseRequest
                 'max:15'
             ],
 
-            'android_version' => [
+            'version' => [
                 'required',
                 'string',
                 'max:50'
             ],
 
-            'ios_version' => [
+            'android_link' => [
                 'required',
-                'string',
-                'max:50'
+                'url',
+            ],
+
+            'ios_link' => [
+                'required',
+                'url',
             ],
         ];
     }

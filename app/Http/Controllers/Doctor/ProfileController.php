@@ -20,7 +20,7 @@ class ProfileController extends Controller
     public function updateProfile(UpdateProfileRequest $request)
     {
         $user = Auth::guard('doctor')->user();
-        $user->update($request->validated());
+        $user->update($request->validated() + ['is_profile_completed' => true]);
         return redirect()->route('doctor.profile.index')->with('success', 'تم تحديث الملف الشخصي بنجاح');
     }
 

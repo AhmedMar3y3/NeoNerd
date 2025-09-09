@@ -5,8 +5,8 @@ use App\Models\Course;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 use App\Filters\CourseFilter;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Doctor\Course\StoreCourseRequest;
 use App\Http\Requests\Doctor\Course\UpdateCourseRequest;
@@ -16,7 +16,7 @@ class CourseController extends Controller
     public function index(Request $request)
     {
         $filter = new CourseFilter();
-        $query = Course::with(['doctor', 'subject', 'units.lessons'])
+        $query  = Course::with(['doctor', 'subject', 'units.lessons'])
             ->where('doctor_id', Auth::guard('doctor')->id());
 
         if ($request->filled('search')) {
@@ -87,6 +87,10 @@ class CourseController extends Controller
 
     public function create()
     {
+        $doctor = Auth::guard('doctor')->user();
+        if ($doctor->is_profile_completed == false) {
+            return redirect()->route('doctor.courses.index')->with('error', 'يرجى تحديث معلوماتك الدراسية قبل إنشاء دورة.');
+        }
         $subjects = Subject::with('collegeType')
             ->orderBy('academic_level')
             ->orderBy('grade_level')

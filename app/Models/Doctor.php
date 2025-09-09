@@ -21,6 +21,7 @@ class Doctor extends Authenticatable
         'image',
         'is_active',
         'college_id',
+        'is_profile_completed',
     ];
 
     protected $hidden = [
@@ -32,6 +33,7 @@ class Doctor extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'is_active' => 'boolean',
+        'is_profile_completed' => 'boolean',
     ];
 
     protected static $imageAttributes = ['image'];

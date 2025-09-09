@@ -43,6 +43,12 @@
         border-left: 4px solid #10b981;
     }
     
+    .alert-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border-left: 4px solid #ef4444;
+    }
+    
     /* Statistics Cards */
     .stats-grid {
         display: grid;
@@ -557,6 +563,14 @@
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
             {{ session('success') }}
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ session('error') }}
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
