@@ -369,15 +369,9 @@
                     المعلومات الأكاديمية
                 </h3>
                 <div class="detail-item">
-                    <span class="detail-label">الكلية</span>
-                    <span class="detail-value {{ $doctor->college ? '' : 'null' }}">
-                        {{ $doctor->college->name ?? 'غير محدد' }}
-                    </span>
-                </div>
-                <div class="detail-item">
                     <span class="detail-label">الجامعة</span>
-                    <span class="detail-value {{ $doctor->college && $doctor->college->university ? '' : 'null' }}">
-                        {{ $doctor->college->university->name ?? 'غير محدد' }}
+                    <span class="detail-value {{ $doctor->university ? '' : 'null' }}">
+                        {{ $doctor->university->name ?? 'غير محدد' }}
                     </span>
                 </div>
             </div>

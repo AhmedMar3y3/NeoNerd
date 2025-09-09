@@ -20,7 +20,7 @@ class Doctor extends Authenticatable
         'bio',
         'image',
         'is_active',
-        'college_id',
+        'university_id',
         'is_profile_completed',
     ];
 
@@ -38,9 +38,9 @@ class Doctor extends Authenticatable
 
     protected static $imageAttributes = ['image'];
 
-    public function college()
+    public function university()
     {
-        return $this->belongsTo(College::class);
+        return $this->belongsTo(University::class);
     }
 
     public function courses()

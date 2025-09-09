@@ -33,7 +33,7 @@ class DoctorController extends Controller
 
     public function show($id)
     {
-        $doctor = Doctor::with(['college'])->findOrFail($id);
+        $doctor = Doctor::with(['university'])->findOrFail($id);
         return view('Admin.doctors.show', compact('doctor'));
     }
 

@@ -727,7 +727,7 @@
                                 </td>
                                 <td>{{ $doctor->email }}</td>
                                 <td>{{ $doctor->phone ?? 'غير محدد' }}</td>
-                                <td>{{ $doctor->college->name ?? 'غير محدد' }}</td>
+                                <td>{{ $doctor->university->name ?? 'غير محدد' }}</td>
                                 <td>
                                     <span class="status-badge {{ $doctor->is_active ? 'status-active' : 'status-inactive' }}">
                                         {{ $doctor->is_active ? 'نشط' : 'غير نشط' }}

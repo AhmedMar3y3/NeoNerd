@@ -34,7 +34,7 @@ class CourseDetailsResource extends JsonResource
             'ratings_count' => $this->ratings_count,
             'doctor_name'   => $this->doctor->name,
             'doctor_image'  => $this->doctor->image ?? env('APP_URL') . '/defaults/profile.webp',
-            'doctor_bio'    => $this->doctor->specialization . ' - ' . $this->doctor->college->university->name,
+            'doctor_bio'    => $this->doctor->specialization . ' - ' . $this->doctor->university->name,
             'is_favorited' => $this->isFavorited(),
             'units'         => $this->isSubscribed 
                 ? UnitWithLessonResource::collection($this->whenLoaded('units'))
