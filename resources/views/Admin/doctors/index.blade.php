@@ -615,12 +615,12 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">الكلية</label>
-                    <select class="form-control" name="college_id">
-                        <option value="">جميع الكليات</option>
-                        @foreach($filterOptions['colleges'] as $college)
-                            <option value="{{ $college->id }}" {{ request('college_id') == $college->id ? 'selected' : '' }}>
-                                {{ $college->name }}
+                    <label class="form-label">الجامعة</label>
+                    <select class="form-control" name="university_id">
+                        <option value="">جميع الجامعات</option>
+                        @foreach($filterOptions['universities'] as $university)
+                            <option value="{{ $university->id }}" {{ request('university_id') == $university->id ? 'selected' : '' }}>
+                                {{ $university->name }}
                             </option>
                         @endforeach
                     </select>

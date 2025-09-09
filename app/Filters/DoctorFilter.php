@@ -2,14 +2,14 @@
 namespace App\Filters;
 
 use App\Models\Doctor;
-use App\Models\College;
+use App\Models\University;
 use Illuminate\Http\Request;
 
 class DoctorFilter
 {
     public function apply(Request $request)
     {
-        $query = Doctor::with(['college']);
+        $query = Doctor::with(['university']);
 
         // Search by name or email
         if ($request->filled('search')) {
@@ -34,9 +34,9 @@ class DoctorFilter
             $query->where('is_partner', $partnerStatus);
         }
 
-        // Filter by college
-        if ($request->filled('college_id')) {
-            $query->where('college_id', $request->college_id);
+        // Filter by university
+        if ($request->filled('university_id')) {
+            $query->where('university_id', $request->university_id);
         }
 
         // Filter by profile completion
@@ -83,7 +83,7 @@ class DoctorFilter
     public function getFilterOptions()
     {
         return [
-            'colleges' => College::orderBy('name')->get(),
+            'universities' => University::orderBy('name')->get(),
         ];
     }
 
