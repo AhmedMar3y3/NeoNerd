@@ -32,11 +32,11 @@ class AuthController extends Controller
             $user = User::where('phone', $request->phone)->first();
 
             if (!$user) {
-                $user = User::create($request->validated());
-                $user->sendVerificationCode();
+                $user = User::create($request->validated()+['is_active' => true, 'is_verified' => false]);
             }
 
             if (!$user->is_active) {
+                DB::rollBack();
                 return $this->failureResponse(__('messages.user_not_active'));
             }
 
