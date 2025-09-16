@@ -227,7 +227,7 @@
                             <option value="">اختر المستخدم</option>
                             @foreach($users as $user)
                                 <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                    {{ $user->first_name }} {{ $user->last_name }} - {{ $user->email }}
+                                    {{ $user->first_name }} {{ $user->last_name }} ({{ $user->phone }}) - {{ $user->email }}
                                 </option>
                             @endforeach
                         </select>
