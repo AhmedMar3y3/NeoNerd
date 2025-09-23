@@ -8,6 +8,14 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UnitWithLessonResource extends JsonResource
 {
+    private $isSubscribed;
+
+    public function __construct($resource, $isSubscribed = false)
+    {
+        parent::__construct($resource);
+        $this->isSubscribed = $isSubscribed;
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -18,7 +26,11 @@ class UnitWithLessonResource extends JsonResource
         return [
             'id'      => $this->id,
             'title'   => $this->title,
-            'lessons' => LessonResource::collection($this->whenLoaded('lessons')),
+            'lessons' => $this->whenLoaded('lessons', function () {
+                return $this->lessons->map(function ($lesson) {
+                    return new LessonResource($lesson, $this->isSubscribed);
+                });
+            }),
         ];
     }
 }

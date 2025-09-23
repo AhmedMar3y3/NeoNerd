@@ -7,6 +7,14 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class LessonResource extends JsonResource
 {
+    private $isSubscribed;
+
+    public function __construct($resource, $isSubscribed = false)
+    {
+        parent::__construct($resource);
+        $this->isSubscribed = $isSubscribed;
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -17,7 +25,7 @@ class LessonResource extends JsonResource
         return [
             'id'        => $this->id,
             'title'     => $this->title,
-            'is_free'   => $this->is_free,
+            'is_free'   => $this->isSubscribed ? 1 : $this->is_free,
             'video_url' => $this->video_url,
             'duration'  => $this->duration,
             // 'has_file'  => (bool) $this->has_file,

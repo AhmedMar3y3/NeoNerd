@@ -37,7 +37,11 @@ class CourseDetailsResource extends JsonResource
             'doctor_bio'    => $this->doctor->specialization . ' - ' . $this->doctor->university->name,
             'is_favorited' => $this->isFavorited(),
             'units'         => $this->isSubscribed 
-                ? UnitWithLessonResource::collection($this->whenLoaded('units'))
+                ? $this->whenLoaded('units', function () {
+                    return $this->units->map(function ($unit) {
+                        return new UnitWithLessonResource($unit, $this->isSubscribed);
+                    });
+                })
                 : UnitWithoutLessonsResource::collection($this->whenLoaded('units')),
         ];
 
