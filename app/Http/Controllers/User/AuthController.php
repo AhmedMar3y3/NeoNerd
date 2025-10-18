@@ -45,10 +45,10 @@ class AuthController extends Controller
             if ($user->phone !== '201070423719') {
                 $sent = HypersenderService::sendMessage($user->phone, 'كود التفعيل الخاص بك هو: ' . $user->code);
 
-                if (!$sent) {
-                    DB::rollBack();
-                    return $this->failureResponse(__('messages.failed_to_send_code'));
-                }
+                // if (!$sent) {
+                //     DB::rollBack();
+                //     return $this->failureResponse(__('messages.failed_to_send_code'));
+                // }
             }
 
             DB::commit();
