@@ -382,7 +382,7 @@
                                class="form-input @error('duration') error @enderror" 
                                placeholder="00"
                                min="0"
-                               max="99"
+                               max="500"
                                value="{{ old('duration_minutes', 0) }}"
                                required>
                         <span class="duration-separator">:</span>
@@ -521,8 +521,8 @@ document.querySelector('form').addEventListener('submit', function(e) {
     if (!minutes || !seconds) {
         showError('duration_minutes', 'مدة الدرس مطلوبة');
         hasErrors = true;
-    } else if (parseInt(minutes) < 0 || parseInt(minutes) > 99) {
-        showError('duration_minutes', 'الدقائق يجب أن تكون بين 0 و 99');
+    } else if (parseInt(minutes) < 0 || parseInt(minutes) > 500) {
+        showError('duration_minutes', 'الدقائق يجب أن تكون بين 0 و 500');
         hasErrors = true;
     } else if (parseInt(seconds) < 0 || parseInt(seconds) > 59) {
         showError('duration_seconds', 'الثواني يجب أن تكون بين 0 و 59');

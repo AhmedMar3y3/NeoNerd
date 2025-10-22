@@ -22,7 +22,6 @@ class StoreLessonRequest extends BaseRequest
             'duration' => [
                 'required',
                 'string',
-                'regex:/^\d{1,2}:\d{2}$/',
             ],
             'is_free' => [
                 'boolean',
