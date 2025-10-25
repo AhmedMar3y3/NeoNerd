@@ -46,5 +46,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('courses/{id}'         , [HomeController::class, 'getCourseDetails']);
     Route::get('courses-ratings/{id}' , [HomeController::class, 'courseRatings']);
     Route::post('rate-course/{id}'    , [HomeController::class, 'rateCourse']);
+    Route::get('subscribed-courses'   , [HomeController::class, 'getSubscribedCourses']);
+
+    // Notification Routes //
+    Route::get('notifications'                    , [HomeController::class, 'getNotifications']);
+    Route::post('notifications/{id}/mark-read'    , [HomeController::class, 'markNotificationAsRead']);
+    Route::post('notifications/mark-all-read'     , [HomeController::class, 'markAllNotificationsAsRead']);
 
 });

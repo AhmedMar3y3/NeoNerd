@@ -154,6 +154,18 @@ class User extends Authenticatable
     {
         return $this->hasMany(Rating::class);
     }
+
+    public function subscribedCourses()
+    {
+        return $this->hasManyThrough(
+            Course::class,
+            Subscription::class,
+            'user_id',
+            'id',
+            'id',
+            'course_id'
+        )->where('subscriptions.is_active', true);
+    }
 }
 
 

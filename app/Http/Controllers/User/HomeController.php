@@ -9,6 +9,7 @@ use App\Http\Resources\Course\CourseDetailsResource;
 use App\Http\Resources\Course\CourseResource;
 use App\Http\Resources\Course\RatingsResource;
 use App\Http\Resources\Home\SubjectsResource;
+use App\Http\Resources\Notification\NotificationResource;
 use App\Models\Banner;
 use App\Models\Course;
 use App\Models\Subject;
@@ -132,6 +133,44 @@ class HomeController extends Controller
 
         $user->ratings()->create($request->validated() + ['course_id' => $id]);
         return $this->successResponse(__('messages.added_successfully'));
+    }
+
+    public function getSubscribedCourses(Request $request)
+    {
+        $user = $request->user();
+        $subscribedCourses = $user->subscribedCourses()->with(['subject', 'doctor'])->orderBy('created_at', 'desc')->get(); 
+        return $this->successWithDataResponse(CourseResource::collection($subscribedCourses));
+    }
+
+    public function getNotifications(Request $request)
+    {
+        $user = $request->user();
+        $notifications = $user->notifications()->orderBy('created_at', 'desc')->paginate(20);
+        return $this->successWithDataResponse(NotificationResource::collection($notifications));
+    }
+
+    public function markNotificationAsRead(Request $request, $id)
+    {
+        $user = $request->user();
+        
+        $notification = $user->notifications()->find($id);
+        
+        if (!$notification) {
+            return $this->failureResponse(__('messages.notification_not_found'));
+        }
+
+        $notification->markAsRead();
+        
+        return $this->successResponse(__('messages.notification_marked_as_read'));
+    }
+
+    public function markAllNotificationsAsRead(Request $request)
+    {
+        $user = $request->user();
+        
+        $user->unreadNotifications->markAsRead();
+        
+        return $this->successResponse(__('messages.all_notifications_marked_as_read'));
     }
 
     private function buildUserCoursesQuery($user, $subjectId = null)

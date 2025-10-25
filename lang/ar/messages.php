@@ -31,4 +31,7 @@ return
         'rating_submitted' => 'تم تقديم التقييم بنجاح',
         'already_rated' => 'لقد قمت بتقييم هذه الدورة بالفعل',
         'subscription_required' => 'يجب أن تكون مشتركًا في هذه الدورة لتتمكن من تقييمها.',
+        'notification_not_found' => 'الإشعار غير موجود',
+        'notification_marked_as_read' => 'تم تمييز الإشعار كمقروء',
+        'all_notifications_marked_as_read' => 'تم تمييز جميع الإشعارات كمقروءة',
     ];
