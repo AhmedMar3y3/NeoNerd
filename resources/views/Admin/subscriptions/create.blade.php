@@ -1,6 +1,8 @@
 @extends('Admin.layout')
 
 @section('styles')
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
     .subscription-form-container {
         padding: 2rem 0;
@@ -251,6 +253,89 @@
         }
     }
     
+    /* Select2 Custom Styling */
+    .select2-container {
+        width: 100% !important;
+    }
+    
+    .select2-container--default .select2-selection--single {
+        background: rgba(255,255,255,0.05) !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        border-radius: 8px !important;
+        height: 42px !important;
+        padding: 0 !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #fff !important;
+        line-height: 40px !important;
+        padding-left: 12px !important;
+        padding-right: 20px !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: rgba(148, 163, 184, 0.7) !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 40px !important;
+        right: 8px !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-color: #94a3b8 transparent transparent transparent !important;
+    }
+    
+    .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+        border-color: transparent transparent #94a3b8 transparent !important;
+    }
+    
+    .select2-dropdown {
+        background: #1E293B !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
+    }
+    
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+        background: rgba(255,255,255,0.05) !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        border-radius: 6px !important;
+        color: #fff !important;
+        padding: 8px 12px !important;
+    }
+    
+    .select2-container--default .select2-search--dropdown .select2-search__field:focus {
+        border-color: #38bdf8 !important;
+        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
+        outline: none !important;
+    }
+    
+    .select2-container--default .select2-results__option {
+        background: transparent !important;
+        color: #e2e8f0 !important;
+        padding: 8px 12px !important;
+    }
+    
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background: rgba(56, 189, 248, 0.2) !important;
+        color: #38bdf8 !important;
+    }
+    
+    .select2-container--default .select2-results__option[aria-selected=true] {
+        background: rgba(56, 189, 248, 0.3) !important;
+        color: #38bdf8 !important;
+    }
+    
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background: rgba(56, 189, 248, 0.2) !important;
+        color: #38bdf8 !important;
+    }
+    
+    .select2-container--default .select2-results__option .select2-results__option {
+        padding-left: 20px !important;
+    }
+    
     /* Responsive */
     @media (max-width: 768px) {
         .info-grid {
@@ -300,14 +385,20 @@
             <!-- User Selection -->
             <div class="form-group">
                 <label for="user_id" class="form-label">المستخدم <span class="text-danger">*</span></label>
-                <select name="user_id" id="user_id" class="form-control @error('user_id') is-invalid @enderror" required>
+                <select name="user_id" id="user_id" class="form-control select2-searchable @error('user_id') is-invalid @enderror" required>
                     <option value="">اختر المستخدم</option>
                     @foreach($users as $user)
-                        <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                            {{ $user->first_name }} {{ $user->last_name }} ({{ $user->phone }}) - {{ $user->email }}
+                        <option value="{{ $user->id }}" 
+                                data-phone="{{ $user->phone }}" 
+                                data-email="{{ $user->email }}"
+                                {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                            {{ $user->first_name }} {{ $user->last_name }} - {{ $user->phone }} - {{ $user->email }}
                         </option>
                     @endforeach
                 </select>
+                <small class="form-text text-muted" style="color: #94a3b8; font-size: 0.8rem; margin-top: 0.25rem;">
+                    <i class="fa fa-search"></i> يمكنك البحث بالاسم أو رقم الهاتف أو البريد الإلكتروني
+                </small>
                 @error('user_id')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -415,8 +506,129 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Select2 for user dropdown with search functionality
+    $('#user_id').select2({
+        placeholder: 'ابحث عن المستخدم بالاسم أو رقم الهاتف أو البريد الإلكتروني (مثال: 01234567890)',
+        allowClear: true,
+        dir: 'rtl',
+        language: {
+            noResults: function() {
+                return "لا توجد نتائج";
+            },
+            searching: function() {
+                return "جاري البحث...";
+            },
+            inputTooShort: function() {
+                return "أدخل حرف واحد على الأقل للبحث";
+            }
+        },
+        matcher: function(params, data) {
+            // If there are no search terms, return all data
+            if ($.trim(params.term) === '') {
+                return data;
+            }
+            
+            // Skip if this is an optgroup
+            if (typeof data.text === 'undefined') {
+                return null;
+            }
+            
+            // Get the search term and convert to lowercase
+            var searchTerm = params.term.toLowerCase().trim();
+            
+            // Get the option text and convert to lowercase
+            var optionText = data.text.toLowerCase();
+            
+            // Get phone and email from data attributes
+            var phone = $(data.element).data('phone') || '';
+            var email = $(data.element).data('email') || '';
+            
+            // Clean phone number for better matching (remove spaces, dashes, parentheses)
+            var cleanPhone = phone.replace(/[\s\-\(\)\+]/g, '').toLowerCase();
+            var cleanSearchTerm = searchTerm.replace(/[\s\-\(\)\+]/g, '');
+            
+            // Check if search term matches name
+            if (optionText.indexOf(searchTerm) > -1) {
+                return data;
+            }
+            
+            // Check if search term matches phone (exact match or partial match)
+            if (phone.toLowerCase().indexOf(searchTerm) > -1 || 
+                cleanPhone.indexOf(cleanSearchTerm) > -1) {
+                return data;
+            }
+            
+            // Check if search term matches email
+            if (email.toLowerCase().indexOf(searchTerm) > -1) {
+                return data;
+            }
+            
+            // Return null if no match
+            return null;
+        },
+        templateResult: function(data) {
+            if (data.loading) {
+                return data.text;
+            }
+            
+            // Get phone and email from data attributes
+            var phone = $(data.element).data('phone') || '';
+            var email = $(data.element).data('email') || '';
+            
+            // Create custom template with phone and email
+            var $result = $(
+                '<div class="user-option">' +
+                    '<div class="user-name">' + data.text + '</div>' +
+                    '<div class="user-details">' +
+                        '<span class="user-phone"><i class="fa fa-phone"></i> ' + phone + '</span>' +
+                        '<span class="user-email"><i class="fa fa-envelope"></i> ' + email + '</span>' +
+                    '</div>' +
+                '</div>'
+            );
+            
+            return $result;
+        },
+        templateSelection: function(data) {
+            return data.text;
+        },
+        escapeMarkup: function(markup) {
+            return markup;
+        }
+    });
+    
+    // Add custom CSS for the template
+    $('<style>')
+        .prop('type', 'text/css')
+        .html(`
+            .user-option {
+                padding: 8px 0;
+            }
+            .user-name {
+                font-weight: 600;
+                color: #fff;
+                margin-bottom: 4px;
+            }
+            .user-details {
+                display: flex;
+                gap: 15px;
+                font-size: 0.85rem;
+            }
+            .user-phone, .user-email {
+                color: #94a3b8;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+            .user-phone i, .user-email i {
+                color: #38bdf8;
+                font-size: 0.8rem;
+            }
+        `)
+        .appendTo('head');
+
     const subscriptionTypeSelect = document.getElementById('subscription_type');
     const courseSelection = document.getElementById('course_selection');
     const bookSelection = document.getElementById('book_selection');
