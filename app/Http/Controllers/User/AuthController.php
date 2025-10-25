@@ -30,6 +30,10 @@ class AuthController extends Controller
         DB::beginTransaction();
         try {
             $user = User::where('phone', $request->phone)->first();
+            if ($user) {
+                $user->fcm_token = $request->fcm_token;
+                $user->save();
+            }
 
             if (!$user) {
                 $user = User::create($request->validated()+['is_active' => true, 'is_verified' => false]);
