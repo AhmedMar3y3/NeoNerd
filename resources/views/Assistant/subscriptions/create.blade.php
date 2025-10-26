@@ -185,6 +185,121 @@
         display: block;
     }
     
+    /* Search Results Dropdown */
+    .form-group {
+        position: relative;
+    }
+    
+    .search-results-dropdown {
+        position: absolute;
+        z-index: 1000;
+        background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        max-height: 400px;
+        overflow-y: auto;
+        display: none;
+        margin-top: 5px;
+        width: 100%;
+    }
+    
+    .search-results-dropdown.show {
+        display: block;
+    }
+    
+    .search-result-item {
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .search-result-item:last-child {
+        border-bottom: none;
+    }
+    
+    .search-result-item:hover,
+    .search-result-item.selected {
+        background: rgba(56, 189, 248, 0.15);
+        transform: translateX(-3px);
+        border-left: 3px solid #38bdf8;
+    }
+    
+    .result-user-name {
+        color: #fff;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+    
+    .result-user-details {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .result-user-phone {
+        color: #94a3b8;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    
+    .result-user-phone i {
+        color: #38bdf8;
+        font-size: 0.8rem;
+    }
+    
+    .selected-user-display {
+        background: rgba(56, 189, 248, 0.15);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 0.5rem;
+        border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    
+    .selected-user-name {
+        color: #38bdf8;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .selected-user-phone {
+        color: #94a3b8;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    
+    .selected-user-phone i {
+        color: #38bdf8;
+        font-size: 0.8rem;
+    }
+    
+    /* Custom Scrollbar */
+    .search-results-dropdown::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .search-results-dropdown::-webkit-scrollbar-track {
+        background: rgba(255,255,255,0.05);
+        border-radius: 4px;
+    }
+    
+    .search-results-dropdown::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.2);
+        border-radius: 4px;
+    }
+    
+    .search-results-dropdown::-webkit-scrollbar-thumb:hover {
+        background: rgba(255,255,255,0.3);
+    }
+    
     @media (max-width: 768px) {
         .form-grid {
             grid-template-columns: 1fr;
@@ -222,15 +337,15 @@
                 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label class="form-label">المستخدم</label>
-                        <select name="user_id" class="form-select @error('user_id') is-invalid @enderror" required>
-                            <option value="">اختر المستخدم</option>
-                            @foreach($users as $user)
-                                <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                    {{ $user->first_name }} {{ $user->last_name }} ({{ $user->phone }}) - {{ $user->email }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <label class="form-label">ابحث عن المستخدم</label>
+                        <input type="text" 
+                               id="user_search" 
+                               class="form-control @error('user_id') is-invalid @enderror" 
+                               placeholder="ابدأ بالكتابة للبحث بالاسم أو رقم الهاتف..." 
+                               autocomplete="off"
+                               value="{{ old('user_search') }}">
+                        <input type="hidden" name="user_id" id="user_id" value="{{ old('user_id') }}">
+                        <div id="user_search_results" class="search-results-dropdown"></div>
                         @error('user_id')
                             <div class="error-message">{{ $message }}</div>
                         @enderror
@@ -312,6 +427,169 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const users = @json($users);
+    const userSearchInput = document.getElementById('user_search');
+    const userIdInput = document.getElementById('user_id');
+    const searchResultsDiv = document.getElementById('user_search_results');
+    let searchTimeout;
+    let selectedUserIndex = -1;
+    
+    // Search functionality
+    function performSearch(query) {
+        if (query.length < 1) {
+            searchResultsDiv.classList.remove('show');
+            return;
+        }
+        
+        const searchTerm = query.toLowerCase().trim();
+        const results = [];
+        
+        users.forEach(user => {
+            const fullName = `${user.first_name} ${user.last_name}`.toLowerCase();
+            const phone = user.phone ? user.phone.toLowerCase().replace(/[\s\-\(\)\+]/g, '') : '';
+            const cleanSearchTerm = searchTerm.replace(/[\s\-\(\)\+]/g, '');
+            
+            let score = 0;
+            let matched = false;
+            
+            if (fullName.includes(searchTerm)) {
+                score += 10;
+                matched = true;
+            }
+            
+            if (phone.includes(cleanSearchTerm)) {
+                score += 5;
+                matched = true;
+            }
+            
+            if (matched) {
+                results.push({ user, score });
+            }
+        });
+        
+        results.sort((a, b) => b.score - a.score);
+        displaySearchResults(results);
+    }
+    
+    function displaySearchResults(results) {
+        if (results.length === 0) {
+            searchResultsDiv.innerHTML = '<div style="padding: 2rem; text-align: center; color: #94a3b8;">لا توجد نتائج</div>';
+            searchResultsDiv.classList.add('show');
+            return;
+        }
+        
+        let html = '';
+        results.forEach((result, index) => {
+            const user = result.user;
+            html += `
+                <div class="search-result-item" data-user-id="${user.id}" data-index="${index}">
+                    <div class="result-user-name">${user.first_name} ${user.last_name}</div>
+                    <div class="result-user-details">
+                        <span class="result-user-phone">
+                            <i class="fa fa-phone"></i> ${user.phone}
+                        </span>
+                    </div>
+                </div>
+            `;
+        });
+        
+        searchResultsDiv.innerHTML = html;
+        searchResultsDiv.classList.add('show');
+        
+        document.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const userId = this.dataset.userId;
+                const userName = this.querySelector('.result-user-name').textContent;
+                const userPhone = this.querySelector('.result-user-phone').textContent.replace('📱', '').trim();
+                
+                userIdInput.value = userId;
+                userSearchInput.value = userName;
+                showSelectedUser(userName, userPhone);
+                searchResultsDiv.classList.remove('show');
+                selectedUserIndex = -1;
+            });
+            
+            item.addEventListener('mouseenter', function() {
+                document.querySelectorAll('.search-result-item').forEach(i => i.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+    }
+    
+    function showSelectedUser(name, phone) {
+        const existingDisplay = document.querySelector('.selected-user-display');
+        if (existingDisplay) {
+            existingDisplay.remove();
+        }
+        
+        const display = document.createElement('div');
+        display.className = 'selected-user-display';
+        display.innerHTML = `
+            <div class="selected-user-name">
+                <i class="fa fa-check-circle"></i> المستخدم المحدد: ${name}
+            </div>
+            <div class="selected-user-info">
+                <span class="selected-user-phone">
+                    <i class="fa fa-phone"></i> ${phone}
+                </span>
+            </div>
+        `;
+        
+        userSearchInput.parentNode.appendChild(display);
+    }
+    
+    userSearchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const query = this.value;
+        const existingDisplay = document.querySelector('.selected-user-display');
+        if (existingDisplay) {
+            existingDisplay.remove();
+            userIdInput.value = '';
+        }
+        
+        searchTimeout = setTimeout(() => {
+            performSearch(query);
+        }, 300);
+    });
+    
+    userSearchInput.addEventListener('keydown', function(e) {
+        const items = document.querySelectorAll('.search-result-item');
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            selectedUserIndex = Math.min(selectedUserIndex + 1, items.length - 1);
+            updateSelectedItem(items);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            selectedUserIndex = Math.max(selectedUserIndex - 1, -1);
+            updateSelectedItem(items);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (selectedUserIndex >= 0 && items[selectedUserIndex]) {
+                items[selectedUserIndex].click();
+            }
+        } else if (e.key === 'Escape') {
+            searchResultsDiv.classList.remove('show');
+        }
+    });
+    
+    function updateSelectedItem(items) {
+        items.forEach((item, index) => {
+            item.classList.toggle('selected', index === selectedUserIndex);
+        });
+        
+        if (selectedUserIndex >= 0 && items[selectedUserIndex]) {
+            items[selectedUserIndex].scrollIntoView({ block: 'nearest' });
+        }
+    }
+    
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.form-group')) {
+            searchResultsDiv.classList.remove('show');
+        }
+    });
+    
+    // Subscription type functionality
     const subscriptionTypeSelect = document.querySelector('select[name="subscription_type"]');
     const courseSelection = document.getElementById('course-selection');
     
@@ -325,9 +603,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     subscriptionTypeSelect.addEventListener('change', toggleCourseSelection);
-    
-    // Initialize on page load
     toggleCourseSelection();
+    
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        if (!userIdInput.value) {
+            e.preventDefault();
+            alert('الرجاء اختيار مستخدم');
+            userSearchInput.focus();
+            return false;
+        }
+    });
 });
 </script>
 @endsection
