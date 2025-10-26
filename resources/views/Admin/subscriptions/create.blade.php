@@ -1,8 +1,6 @@
 @extends('Admin.layout')
 
 @section('styles')
-<!-- Select2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
     .subscription-form-container {
         padding: 2rem 0;
@@ -253,87 +251,144 @@
         }
     }
     
-    /* Select2 Custom Styling */
-    .select2-container {
-        width: 100% !important;
+    /* Search Results Dropdown */
+    .search-results-dropdown {
+        position: absolute;
+        z-index: 1000;
+        background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        max-height: 400px;
+        overflow-y: auto;
+        display: none;
+        margin-top: 5px;
+        width: 100%;
     }
     
-    .select2-container--default .select2-selection--single {
-        background: rgba(255,255,255,0.05) !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
-        border-radius: 8px !important;
-        height: 42px !important;
-        padding: 0 !important;
+    .search-results-dropdown.show {
+        display: block;
     }
     
-    .select2-container--default .select2-selection--single .select2-selection__rendered {
-        color: #fff !important;
-        line-height: 40px !important;
-        padding-left: 12px !important;
-        padding-right: 20px !important;
+    .search-result-item {
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
     }
     
-    .select2-container--default .select2-selection--single .select2-selection__placeholder {
-        color: rgba(148, 163, 184, 0.7) !important;
+    .search-result-item:last-child {
+        border-bottom: none;
     }
     
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 40px !important;
-        right: 8px !important;
+    .search-result-item:hover {
+        background: rgba(56, 189, 248, 0.15);
+        transform: translateX(-3px);
     }
     
-    .select2-container--default .select2-selection--single .select2-selection__arrow b {
-        border-color: #94a3b8 transparent transparent transparent !important;
+    .search-result-item.selected {
+        background: rgba(56, 189, 248, 0.25);
+        border-left: 3px solid #38bdf8;
     }
     
-    .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
-        border-color: transparent transparent #94a3b8 transparent !important;
+    .result-user-name {
+        color: #fff;
+        font-weight: 600;
+        font-size: 1rem;
     }
     
-    .select2-dropdown {
-        background: #1E293B !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
-        border-radius: 8px !important;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
+    .result-user-details {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
     }
     
-    .select2-container--default .select2-search--dropdown .select2-search__field {
-        background: rgba(255,255,255,0.05) !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
-        border-radius: 6px !important;
-        color: #fff !important;
-        padding: 8px 12px !important;
+    .result-user-phone,
+    .result-user-email {
+        color: #94a3b8;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
     }
     
-    .select2-container--default .select2-search--dropdown .select2-search__field:focus {
-        border-color: #38bdf8 !important;
-        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
-        outline: none !important;
+    .result-user-phone i,
+    .result-user-email i {
+        color: #38bdf8;
+        font-size: 0.8rem;
     }
     
-    .select2-container--default .select2-results__option {
-        background: transparent !important;
-        color: #e2e8f0 !important;
-        padding: 8px 12px !important;
+    .search-results-dropdown.empty {
+        padding: 2rem;
+        text-align: center;
+        color: #94a3b8;
     }
     
-    .select2-container--default .select2-results__option--highlighted[aria-selected] {
-        background: rgba(56, 189, 248, 0.2) !important;
-        color: #38bdf8 !important;
+    .search-results-dropdown.loading {
+        padding: 2rem;
+        text-align: center;
+        color: #94a3b8;
     }
     
-    .select2-container--default .select2-results__option[aria-selected=true] {
-        background: rgba(56, 189, 248, 0.3) !important;
-        color: #38bdf8 !important;
+    .selected-user-display {
+        background: rgba(56, 189, 248, 0.15);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 0.5rem;
+        border: 1px solid rgba(56, 189, 248, 0.3);
     }
     
-    .select2-container--default .select2-results__option--highlighted[aria-selected] {
-        background: rgba(56, 189, 248, 0.2) !important;
-        color: #38bdf8 !important;
+    .selected-user-name {
+        color: #38bdf8;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
     }
     
-    .select2-container--default .select2-results__option .select2-results__option {
-        padding-left: 20px !important;
+    .selected-user-info {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .selected-user-phone,
+    .selected-user-email {
+        color: #94a3b8;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    
+    .selected-user-phone i,
+    .selected-user-email i {
+        color: #38bdf8;
+        font-size: 0.8rem;
+    }
+    
+    .form-group {
+        position: relative;
+    }
+    
+    /* Custom Scrollbar for Search Results */
+    .search-results-dropdown::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .search-results-dropdown::-webkit-scrollbar-track {
+        background: rgba(255,255,255,0.05);
+        border-radius: 4px;
+    }
+    
+    .search-results-dropdown::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.2);
+        border-radius: 4px;
+    }
+    
+    .search-results-dropdown::-webkit-scrollbar-thumb:hover {
+        background: rgba(255,255,255,0.3);
     }
     
     /* Responsive */
@@ -348,6 +403,10 @@
         
         .btn-primary, .btn-light {
             justify-content: center;
+        }
+        
+        .search-results-dropdown {
+            max-height: 300px;
         }
     }
 </style>
@@ -382,22 +441,19 @@
         <form method="POST" action="{{ route('admin.subscriptions.store') }}">
             @csrf
             
-            <!-- User Selection -->
+            <!-- User Selection with Search Box -->
             <div class="form-group">
-                <label for="user_id" class="form-label">المستخدم <span class="text-danger">*</span></label>
-                <select name="user_id" id="user_id" class="form-control select2-searchable @error('user_id') is-invalid @enderror" required>
-                    <option value="">اختر المستخدم</option>
-                    @foreach($users as $user)
-                        <option value="{{ $user->id }}" 
-                                data-phone="{{ $user->phone }}" 
-                                data-email="{{ $user->email }}"
-                                {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                            {{ $user->first_name }} {{ $user->last_name }} - {{ $user->phone }} - {{ $user->email }}
-                        </option>
-                    @endforeach
-                </select>
+                <label for="user_search" class="form-label">ابحث عن المستخدم <span class="text-danger">*</span></label>
+                <input type="text" 
+                       id="user_search" 
+                       class="form-control @error('user_id') is-invalid @enderror" 
+                       placeholder="ابدأ بالكتابة للبحث بالاسم أو رقم الهاتف..." 
+                       autocomplete="off"
+                       value="{{ old('user_search') }}">
+                <input type="hidden" name="user_id" id="user_id" value="{{ old('user_id') }}">
+                <div id="user_search_results" class="search-results-dropdown"></div>
                 <small class="form-text text-muted" style="color: #94a3b8; font-size: 0.8rem; margin-top: 0.25rem;">
-                    <i class="fa fa-search"></i> يمكنك البحث بالاسم أو رقم الهاتف أو البريد الإلكتروني
+                    <i class="fa fa-search"></i> ابدأ بالكتابة للبحث (الاسم أو رقم الهاتف)
                 </small>
                 @error('user_id')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -506,128 +562,244 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Select2 for user dropdown with search functionality
-    $('#user_id').select2({
-        placeholder: 'ابحث عن المستخدم بالاسم أو رقم الهاتف أو البريد الإلكتروني (مثال: 01234567890)',
-        allowClear: true,
-        dir: 'rtl',
-        language: {
-            noResults: function() {
-                return "لا توجد نتائج";
-            },
-            searching: function() {
-                return "جاري البحث...";
-            },
-            inputTooShort: function() {
-                return "أدخل حرف واحد على الأقل للبحث";
-            }
-        },
-        matcher: function(params, data) {
-            // If there are no search terms, return all data
-            if ($.trim(params.term) === '') {
-                return data;
-            }
+    const users = @json($users);
+    const userSearchInput = document.getElementById('user_search');
+    const userIdInput = document.getElementById('user_id');
+    const searchResultsDiv = document.getElementById('user_search_results');
+    let searchTimeout;
+    let selectedUserIndex = -1;
+    
+    // Debounced search function
+    function performSearch(query) {
+        if (query.length < 1) {
+            searchResultsDiv.classList.remove('show');
+            return;
+        }
+        
+        const searchTerm = query.toLowerCase().trim();
+        const results = [];
+        
+        // Search through users
+        users.forEach(user => {
+            const fullName = `${user.first_name} ${user.last_name}`.toLowerCase();
+            const phone = user.phone ? user.phone.toLowerCase().replace(/[\s\-\(\)\+]/g, '') : '';
+            const cleanSearchTerm = searchTerm.replace(/[\s\-\(\)\+]/g, '');
             
-            // Skip if this is an optgroup
-            if (typeof data.text === 'undefined') {
-                return null;
-            }
+            let score = 0;
+            let matched = false;
             
-            // Get the search term and convert to lowercase
-            var searchTerm = params.term.toLowerCase().trim();
-            
-            // Get the option text and convert to lowercase
-            var optionText = data.text.toLowerCase();
-            
-            // Get phone and email from data attributes
-            var phone = $(data.element).data('phone') || '';
-            var email = $(data.element).data('email') || '';
-            
-            // Clean phone number for better matching (remove spaces, dashes, parentheses)
-            var cleanPhone = phone.replace(/[\s\-\(\)\+]/g, '').toLowerCase();
-            var cleanSearchTerm = searchTerm.replace(/[\s\-\(\)\+]/g, '');
-            
-            // Check if search term matches name
-            if (optionText.indexOf(searchTerm) > -1) {
-                return data;
+            // Check name match
+            if (fullName.includes(searchTerm)) {
+                score += 10;
+                matched = true;
             }
             
-            // Check if search term matches phone (exact match or partial match)
-            if (phone.toLowerCase().indexOf(searchTerm) > -1 || 
-                cleanPhone.indexOf(cleanSearchTerm) > -1) {
-                return data;
+            // Check phone match (exact or partial)
+            if (phone.includes(cleanSearchTerm)) {
+                score += 5;
+                matched = true;
             }
             
-            // Check if search term matches email
-            if (email.toLowerCase().indexOf(searchTerm) > -1) {
-                return data;
+            if (matched) {
+                results.push({ user, score });
             }
+        });
+        
+        // Sort by score (best matches first)
+        results.sort((a, b) => b.score - a.score);
+        
+        // Display results
+        displaySearchResults(results);
+    }
+    
+    function displaySearchResults(results) {
+        if (results.length === 0) {
+            searchResultsDiv.innerHTML = '<div class="empty">لا توجد نتائج</div>';
+            searchResultsDiv.classList.add('show');
+            return;
+        }
+        
+        let html = '';
+        results.forEach((result, index) => {
+            const user = result.user;
+            html += `
+                <div class="search-result-item" data-user-id="${user.id}" data-index="${index}">
+                    <div class="result-user-name">${user.first_name} ${user.last_name}</div>
+                    <div class="result-user-details">
+                        <span class="result-user-phone">
+                            <i class="fa fa-phone"></i> ${user.phone}
+                        </span>
+                    </div>
+                </div>
+            `;
+        });
+        
+        searchResultsDiv.innerHTML = html;
+        searchResultsDiv.classList.add('show');
+        
+        // Add click listeners to results
+        document.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const userId = this.dataset.userId;
+                const userName = this.querySelector('.result-user-name').textContent;
+                const userPhone = this.querySelector('.result-user-phone').textContent.replace('📱', '').trim();
+                
+                // Set the selected user
+                userIdInput.value = userId;
+                userSearchInput.value = userName;
+                
+                // Display selected user info
+                showSelectedUser(userName, userPhone);
+                
+                // Hide search results
+                searchResultsDiv.classList.remove('show');
+                selectedUserIndex = -1;
+            });
             
-            // Return null if no match
-            return null;
-        },
-        templateResult: function(data) {
-            if (data.loading) {
-                return data.text;
+            item.addEventListener('mouseenter', function() {
+                document.querySelectorAll('.search-result-item').forEach(i => i.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+    }
+    
+    function showSelectedUser(name, phone) {
+        // Remove existing selected user display
+        const existingDisplay = document.querySelector('.selected-user-display');
+        if (existingDisplay) {
+            existingDisplay.remove();
+        }
+        
+        // Create and show selected user display
+        const display = document.createElement('div');
+        display.className = 'selected-user-display';
+        display.innerHTML = `
+            <div class="selected-user-name">
+                <i class="fa fa-check-circle"></i> المستخدم المحدد: ${name}
+            </div>
+            <div class="selected-user-info">
+                <span class="selected-user-phone">
+                    <i class="fa fa-phone"></i> ${phone}
+                </span>
+            </div>
+        `;
+        
+        userSearchInput.parentNode.appendChild(display);
+    }
+    
+    // Handle input events with debounce
+    userSearchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        
+        const query = this.value;
+        const existingDisplay = document.querySelector('.selected-user-display');
+        if (existingDisplay) {
+            existingDisplay.remove();
+            userIdInput.value = '';
+        }
+        
+        searchTimeout = setTimeout(() => {
+            performSearch(query);
+        }, 300); // Wait 300ms after user stops typing
+    });
+    
+    // Handle keyboard navigation
+    userSearchInput.addEventListener('keydown', function(e) {
+        const items = document.querySelectorAll('.search-result-item');
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            selectedUserIndex = Math.min(selectedUserIndex + 1, items.length - 1);
+            updateSelectedItem(items);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            selectedUserIndex = Math.max(selectedUserIndex - 1, -1);
+            updateSelectedItem(items);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (selectedUserIndex >= 0 && items[selectedUserIndex]) {
+                items[selectedUserIndex].click();
             }
-            
-            // Get phone and email from data attributes
-            var phone = $(data.element).data('phone') || '';
-            var email = $(data.element).data('email') || '';
-            
-            // Create custom template with phone and email
-            var $result = $(
-                '<div class="user-option">' +
-                    '<div class="user-name">' + data.text + '</div>' +
-                    '<div class="user-details">' +
-                        '<span class="user-phone"><i class="fa fa-phone"></i> ' + phone + '</span>' +
-                        '<span class="user-email"><i class="fa fa-envelope"></i> ' + email + '</span>' +
-                    '</div>' +
-                '</div>'
-            );
-            
-            return $result;
-        },
-        templateSelection: function(data) {
-            return data.text;
-        },
-        escapeMarkup: function(markup) {
-            return markup;
+        } else if (e.key === 'Escape') {
+            searchResultsDiv.classList.remove('show');
         }
     });
     
-    // Add custom CSS for the template
-    $('<style>')
-        .prop('type', 'text/css')
-        .html(`
-            .user-option {
-                padding: 8px 0;
-            }
-            .user-name {
-                font-weight: 600;
-                color: #fff;
-                margin-bottom: 4px;
-            }
-            .user-details {
-                display: flex;
-                gap: 15px;
-                font-size: 0.85rem;
-            }
-            .user-phone, .user-email {
-                color: #94a3b8;
-                display: flex;
-                align-items: center;
-                gap: 4px;
-            }
-            .user-phone i, .user-email i {
-                color: #38bdf8;
-                font-size: 0.8rem;
-            }
-        `)
-        .appendTo('head');
+    function updateSelectedItem(items) {
+        items.forEach((item, index) => {
+            item.classList.toggle('selected', index === selectedUserIndex);
+        });
+        
+        if (selectedUserIndex >= 0 && items[selectedUserIndex]) {
+            items[selectedUserIndex].scrollIntoView({ block: 'nearest' });
+        }
+    }
+    
+    // Close search results when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.form-group')) {
+            searchResultsDiv.classList.remove('show');
+        }
+    });
+    
+    // Rest of the existing functionality for subscription type
+    const subscriptionTypeSelect = document.getElementById('subscription_type');
+    const courseSelection = document.getElementById('course_selection');
+    const bookSelection = document.getElementById('book_selection');
+    const courseSelect = document.getElementById('course_id');
+    const bookSelect = document.getElementById('book_id');
+
+    function toggleContentSelection() {
+        const selectedType = subscriptionTypeSelect.value;
+        
+        courseSelection.style.display = 'none';
+        bookSelection.style.display = 'none';
+        
+        courseSelect.value = '';
+        bookSelect.value = '';
+        
+        if (selectedType === 'course') {
+            courseSelection.style.display = 'block';
+        } else if (selectedType === 'book') {
+            bookSelection.style.display = 'block';
+        }
+    }
+
+    subscriptionTypeSelect.addEventListener('change', toggleContentSelection);
+    toggleContentSelection();
+
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        if (!userIdInput.value) {
+            e.preventDefault();
+            alert('الرجاء اختيار مستخدم');
+            userSearchInput.focus();
+            return false;
+        }
+        
+        const subscriptionType = subscriptionTypeSelect.value;
+        const courseId = courseSelect.value;
+        const bookId = bookSelect.value;
+        
+        if (subscriptionType === 'course' && !courseId) {
+            e.preventDefault();
+            alert('الرجاء اختيار دورة');
+            courseSelect.focus();
+            return false;
+        }
+        
+        if (subscriptionType === 'book' && !bookId) {
+            e.preventDefault();
+            alert('الرجاء اختيار كتاب');
+            bookSelect.focus();
+            return false;
+        }
+    });
+});
+</script>
 
     const subscriptionTypeSelect = document.getElementById('subscription_type');
     const courseSelection = document.getElementById('course_selection');
